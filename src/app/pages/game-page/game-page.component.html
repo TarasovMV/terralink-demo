@@ -1,1 +1,13 @@
 <p>game-page works!</p>
+
+<tui-carousel [(index)]="cardIndex">
+    <game-card style="height: 300px" *tuiItem></game-card>
+    <game-card style="height: 300px" *tuiItem></game-card>
+    <game-card style="height: 300px" *tuiItem></game-card>
+    <game-card style="height: 300px" *tuiItem></game-card>
+    <game-card style="height: 300px" *tuiItem></game-card>
+    <game-card style="height: 300px" *tuiItem></game-card>
+    <game-card style="height: 300px" *tuiItem></game-card>
+</tui-carousel>
+
+<game-pager class="tui-space_top-4" [count]="7" [activeIdx]="cardIndex"></game-pager>
