@@ -1,3 +1,9 @@
-<button [class]="type">
-    <ng-content></ng-content>
-</button>
+@if (type === 'close') {
+    <button class="close">
+        <img src="./assets/close.png" />
+    </button>
+} @else {
+    <button [class]="type">
+        <ng-content></ng-content>
+    </button>
+}

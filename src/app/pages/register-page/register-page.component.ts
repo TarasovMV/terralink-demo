@@ -28,6 +28,10 @@ export class RegisterPageComponent {
         agreement: new FormControl<boolean>(false, {validators: [Validators.required], nonNullable: true}),
     });
 
+    goToBack(): void {
+        this.router.navigate([Pages.Welcome]);
+    }
+
     checkControlError(controlName: keyof typeof this.form.controls): boolean {
         const control = this.form.controls[controlName];
 

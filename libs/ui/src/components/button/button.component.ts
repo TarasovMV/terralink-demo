@@ -10,5 +10,5 @@ import {CommonModule} from '@angular/common';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ButtonComponent {
-    @Input() type: 'primary' | 'secondary' = 'primary';
+    @Input() type: 'primary' | 'secondary' | 'close' = 'primary';
 }

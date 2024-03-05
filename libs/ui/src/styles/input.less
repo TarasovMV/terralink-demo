@@ -5,11 +5,12 @@ input {
     border-radius: 16px;
     box-sizing: border-box;
     color: #FFF;
-    font-size: 15px;
+    font-size: 20px;
+    font-weight: 500;
     background: transparent;
 
     &::placeholder {
-        color: rgba(255, 255, 255, 0.4);
+        color: rgba(255, 255, 255, 0.7);
     }
 
     &:focus-visible {
@@ -18,5 +19,5 @@ input {
 }
 
 input.error {
-    border-color: #FF0000;
+    border-color: var(--tui-error-fill);
 }

@@ -1,26 +1,27 @@
-<div class="text-title">Регистрация на мероприятие</div>
+<ui-button (click)="goToBack()" class="tui-space_bottom-8" type="close"></ui-button>
+<div class="tui-space_bottom-8 text-title">Регистрация на мероприятие</div>
 <div [formGroup]="form" class="form">
-    <div class="label">Введите ваше ФИО</div>
+    <div class="text-label">Введите ваше ФИО</div>
     <input [class.error]="checkControlError('fio')" formControlName="fio" placeholder="Иванов Иван Иванович"
            type="text" />
 
-    <div class="label">Введите Ваш телефон</div>
+    <div class="text-label">Введите Ваш телефон</div>
     <input [class.error]="checkControlError('phone')" [maskito]="phoneMask" formControlName="phone"
            placeholder="+7 999 999 99 99"
            type="tel" />
 
-    <div class="label">Введите Ваш E-mail</div>
+    <div class="text-label">Введите Ваш E-mail</div>
     <input [class.error]="checkControlError('email')" formControlName="email" placeholder="E-mail" type="email" />
 
-    <div class="label">Наименование организации</div>
+    <div class="text-label">Наименование организации</div>
     <input [class.error]="checkControlError('organization')" formControlName="organization" placeholder="Организация"
            type="text" />
 
-    <div class="label">Ваша должность</div>
+    <div class="text-label">Ваша должность</div>
     <input [class.error]="checkControlError('position')" formControlName="position" placeholder="Должность"
            type="text" />
 
-    <div class="checkbox-container">
+    <div class="tui-space_top-4 tui-space_bottom-12 checkbox-container">
         <input class="checkbox" formControlName="agreement" id="agreement-checkbox" name="checkbox-1" type="checkbox">
         <label class="checkbox-label" for="agreement-checkbox"></label>
         <div class="checkbox-text">Даю согласие <a
