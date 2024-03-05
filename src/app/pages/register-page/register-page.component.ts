@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {MaskitoDirective} from '@maskito/angular';
-import {PHONE_MASK, phoneValidator} from './domain';
+import {PHONE_MASK, phoneValidator} from '../../domain';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ButtonComponent} from '@terralink-demo/ui';
 import {Router} from '@angular/router';
