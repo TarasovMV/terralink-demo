@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, signal} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {ButtonComponent} from '@terralink-demo/ui';
 import {Router} from '@angular/router';
@@ -6,7 +6,7 @@ import {Pages} from '@terralink-demo/models';
 import {TuiDialogService} from '@taiga-ui/core';
 import {PolymorpheusComponent} from '@tinkoff/ng-polymorpheus';
 import {ScannerComponent} from '../../dialogs/scanner/scanner.component';
-import {switchMap, switchScan, takeUntil} from 'rxjs';
+import {takeUntil} from 'rxjs';
 import {TuiDestroyService} from '@taiga-ui/cdk';
 import {ScannerConfirmComponent} from '../../dialogs/scanner-confirm/scanner-confirm.component';
 
@@ -23,6 +23,8 @@ export class WelcomePageComponent {
     private readonly router = inject(Router);
     private readonly dialog = inject(TuiDialogService);
     private readonly destroy$ = inject(TuiDestroyService);
+
+    readonly showLoader = signal<boolean>(false);
 
     openScanner(): void {
         this.dialog

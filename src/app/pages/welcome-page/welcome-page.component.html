@@ -1,7 +1,9 @@
-<div class="logo">ТЕРРАЛИНК ЛОГО</div>
-<div class="text-body">Приветствуем вас на IT конференции</div>
+<img class="tui-space_bottom-16 logo" src="./assets/logo.png" />
+<div class="tui-space_bottom-8 text-body">Приветствуем вас<br/>на IT конференции</div>
 <div class="text-title-1">Бизнес</div>
 <div class="text-title-2">как оркестр</div>
-<div class="text-body">Отсканируйте Ваш личный QR код с бейджа</div>
-<ui-button (click)="openScanner()">Отсканировать</ui-button>
-<ui-button (click)="goToRegister()">У меня нет QR кода</ui-button>
+<div class="space"></div>
+<div class="tui-space_bottom-4 text-body">Отсканируйте Ваш личный<br/>QR код с бейджа для входа</div>
+<ui-button class="tui-space_bottom-4" (click)="openScanner()">Отсканировать</ui-button>
+<ui-button type="secondary" class="tui-space_bottom-4" (click)="goToRegister()">Войти по телефону</ui-button>
+<ui-button type="secondary" (click)="goToRegister()">У меня нет QR кода</ui-button>
