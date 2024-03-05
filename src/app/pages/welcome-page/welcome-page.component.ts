@@ -39,6 +39,10 @@ export class WelcomePageComponent {
         this.router.navigate([Pages.Register]);
     }
 
+    goToAuth(): void {
+        this.router.navigate([Pages.Auth]);
+    }
+
     private openConfirm(email: string): void {
         this.dialog
             .open<boolean>(new PolymorpheusComponent(ScannerConfirmComponent), {
