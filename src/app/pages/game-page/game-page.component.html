@@ -1,13 +1,15 @@
-<p>game-page works!</p>
+<div class="header">
+    <div>Соберите все фрагменты мелодии</div>
+</div>
 
-<tui-carousel [(index)]="cardIndex">
-    <game-card style="height: 300px" *tuiItem></game-card>
-    <game-card style="height: 300px" *tuiItem></game-card>
-    <game-card style="height: 300px" *tuiItem></game-card>
-    <game-card style="height: 300px" *tuiItem></game-card>
-    <game-card style="height: 300px" *tuiItem></game-card>
-    <game-card style="height: 300px" *tuiItem></game-card>
-    <game-card style="height: 300px" *tuiItem></game-card>
+<tui-carousel [draggable]="true">
+    <game-card style="height: 300px" *tuiItem>1</game-card>
+    <game-card style="height: 300px" *tuiItem>2</game-card>
+    <game-card style="height: 300px" *tuiItem>3</game-card>
+    <game-card style="height: 300px" *tuiItem>4</game-card>
+    <game-card style="height: 300px" *tuiItem>5</game-card>
+    <game-card style="height: 300px" *tuiItem>6</game-card>
+    <game-card style="height: 300px" *tuiItem>7</game-card>
 </tui-carousel>
 
 <game-pager class="tui-space_top-4" [count]="7" [activeIdx]="cardIndex"></game-pager>

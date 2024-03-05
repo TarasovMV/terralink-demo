@@ -1,5 +1,24 @@
 :host {
-    --tui-carousel-padding: 0 16px;
+    --tui-carousel-padding: 0 var(--side-padding);
+
+    display: flex;
+    flex-flow: column;
+    //align-items: center;
+    padding: 8vh var(--side-padding) 4vh;
+    min-height: var(--max-height);
+    background-image: url("../../../assets/background.png");
+    background-size: cover;
+    box-sizing: border-box;
+}
+
+tui-carousel {
+    margin: 0 -2rem;
+}
+
+.header {
+    line-height: 1.75rem;
+    font-size: 1.75rem;
+    font-weight: 400;
 }
 
 game-pager {
