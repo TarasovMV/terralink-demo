@@ -1,5 +1,6 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {CommonModule} from '@angular/common';
+import {ScannerComponent} from '../../dialogs/scanner/scanner.component';
 
 @Component({
     selector: 'auth-page',
