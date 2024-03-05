@@ -1,0 +1,22 @@
+input {
+    padding: 15px;
+    border: 2px solid #FFF;
+    width: 100%;
+    border-radius: 16px;
+    box-sizing: border-box;
+    color: #FFF;
+    font-size: 15px;
+    background: transparent;
+
+    &::placeholder {
+        color: rgba(255, 255, 255, 0.4);
+    }
+
+    &:focus-visible {
+        outline: none;
+    }
+}
+
+input.error {
+    border-color: #FF0000;
+}
