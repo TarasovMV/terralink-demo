@@ -3,7 +3,6 @@
 
     display: flex;
     flex-flow: column;
-    //align-items: center;
     padding: 8vh var(--side-padding) 4vh;
     min-height: var(--max-height);
     background-image: url("../../../assets/background.png");
@@ -11,14 +10,42 @@
     box-sizing: border-box;
 }
 
+.header {
+    display: flex;
+    justify-content: space-between;
+    line-height: 1.75rem;
+    font-size: 1.75rem;
+    font-weight: 400;
+
+    .pleer {
+        width: 86px;
+        min-width: 86px;
+        height: 86px;
+        border-radius: 50%;
+        border: solid 2px #fff;
+    }
+}
+
+.text-button {
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
 tui-carousel {
     margin: 0 -2rem;
 }
 
-.header {
-    line-height: 1.75rem;
-    font-size: 1.75rem;
-    font-weight: 400;
+swiper-container {
+    flex-grow: 1;
+    width: calc(100% + 4rem);
+    margin-left: -2rem;
+}
+
+game-card {
+    height: var(--swiper-container-height);
+    width: calc(100% - 4rem);
+    margin-left: 2rem;
 }
 
 game-pager {

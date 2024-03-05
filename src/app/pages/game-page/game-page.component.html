@@ -1,15 +1,19 @@
-<div class="header">
-    <div>Соберите все фрагменты мелодии</div>
+<div class="header tui-space_bottom-8">
+    <div class="tui-space_right-4">Соберите все фрагменты мелодии</div>
+    <div class="pleer"></div>
 </div>
 
-<tui-carousel [draggable]="true">
-    <game-card style="height: 300px" *tuiItem>1</game-card>
-    <game-card style="height: 300px" *tuiItem>2</game-card>
-    <game-card style="height: 300px" *tuiItem>3</game-card>
-    <game-card style="height: 300px" *tuiItem>4</game-card>
-    <game-card style="height: 300px" *tuiItem>5</game-card>
-    <game-card style="height: 300px" *tuiItem>6</game-card>
-    <game-card style="height: 300px" *tuiItem>7</game-card>
-</tui-carousel>
+<swiper-container slides-per-view="1">
+    <swiper-slide><game-card>1</game-card></swiper-slide>
+    <swiper-slide><game-card>2</game-card></swiper-slide>
+    <swiper-slide><game-card>3</game-card></swiper-slide>
+    <swiper-slide><game-card>4</game-card></swiper-slide>
+    <swiper-slide><game-card>5</game-card></swiper-slide>
+    <swiper-slide><game-card>6</game-card></swiper-slide>
+    <swiper-slide><game-card>7</game-card></swiper-slide>
+</swiper-container>
 
-<game-pager class="tui-space_top-4" [count]="7" [activeIdx]="cardIndex"></game-pager>
+<game-pager class="tui-space_top-4" [count]="7" [activeIdx]="cardIndex()"></game-pager>
+
+<ui-button class="tui-space_top-12" type="secondary">Получить фрагмент</ui-button>
+<div class="tui-space_top-4 text-button">Карта мероприятия</div>

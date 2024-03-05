@@ -33,6 +33,7 @@
         "@zxing/ngx-scanner": "^17.0.1",
         "libphonenumber-js": "^1.10.57",
         "rxjs": "~7.8.0",
+        "swiper": "^11.0.7",
         "tslib": "^2.3.0",
         "zone.js": "~0.14.3"
     },
