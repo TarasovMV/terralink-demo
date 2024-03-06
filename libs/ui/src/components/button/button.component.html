@@ -1,10 +1,10 @@
 @if (type === 'close') {
-    <button class="close">
-        <img src="./assets/close.png" />
+    <button class="close" style="color: var(--color-white)">
+        <svg-icon src="assets/close.svg"></svg-icon>
     </button>
 } @else if (type === 'close-black') {
-    <button class="close">
-        <img src="./assets/close-black.png" />
+    <button class="close" style="color: var(--color-black)">
+        <svg-icon src="assets/close.svg"></svg-icon>
     </button>
 } @else {
     <button tuiRipple [class]="type">
