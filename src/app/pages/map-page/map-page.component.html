@@ -2,11 +2,10 @@
     <ui-button (click)="back()" type="close-black"></ui-button>
     <div class="text-title tui-space_left-6">Схема задания</div>
 </div>
-<div class="container">
-    <div class="svg-container">
-        <svg-icon src="assets/map.svg"></svg-icon>
+<div class="container tui-space_bottom-8">
+    <div class="svg-container" [style.width.px]="svgWidth()">
+        <svg-icon [svgStyle]="{'width.px':svgWidth(), 'height.px':svgHeight()}" src="assets/map.svg"></svg-icon>
     </div>
 </div>
-<div class="space"></div>
 <img src="assets/map-scroll.png" />
 

@@ -20,18 +20,19 @@
     color: var(--color-black);
 }
 
-.container::-webkit-scrollbar {
-    display: none;
-}
-
 .container {
+    flex-grow: 1;
     overflow: scroll;
+
     -ms-overflow-style: none;
     scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
 }
 
 .svg-container {
-    display: block;
     width: 800px;
     min-height: 1px;
 }
