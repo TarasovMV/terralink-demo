@@ -1,9 +1,7 @@
 :host {
-    --tui-carousel-padding: 0 var(--side-padding);
-
     display: flex;
     flex-flow: column;
-    padding: 8vh var(--side-padding) 4vh;
+    padding: 4vh var(--side-padding) 3vh;
     min-height: var(--max-height);
     background-image: url("../../../assets/background.png");
     background-size: cover;
@@ -32,10 +30,6 @@
     font-weight: 500;
 }
 
-tui-carousel {
-    margin: 0 -2rem;
-}
-
 swiper-container {
     flex-grow: 1;
     width: calc(100% + 4rem);
@@ -43,7 +37,7 @@ swiper-container {
 }
 
 game-card {
-    height: var(--swiper-container-height);
+    min-height: var(--swiper-container-height);
     width: calc(100% - 4rem);
     margin-left: 2rem;
 }
