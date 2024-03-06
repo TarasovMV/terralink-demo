@@ -1,0 +1,43 @@
+:host {
+    display: flex;
+    flex-flow: column;
+    min-height: var(--max-height);
+    padding: 4vh 0 4vh;
+    background: var(--color-white);
+    box-sizing: border-box;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    padding: 0 var(--side-padding);
+}
+
+.text-title {
+    line-height: 24px;
+    font-size: 30px;
+    font-weight: 800;
+    color: var(--color-black);
+}
+
+.container::-webkit-scrollbar {
+    display: none;
+}
+
+.container {
+    overflow: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.svg-container {
+    display: block;
+    width: 800px;
+    min-height: 1px;
+}
+
+img {
+    height: 66px;
+    width: 94px;
+    margin: auto;
+}

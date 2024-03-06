@@ -31,6 +31,7 @@
         "@zxing/browser": "^0.1.4",
         "@zxing/library": "^0.20.0",
         "@zxing/ngx-scanner": "^17.0.1",
+        "angular-svg-icon": "^17.0.0",
         "libphonenumber-js": "^1.10.57",
         "rxjs": "~7.8.0",
         "swiper": "^11.0.7",
