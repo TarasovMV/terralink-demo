@@ -1,4 +1,4 @@
-import {AfterViewInit, ChangeDetectionStrategy, Component, inject, signal, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, Component, inject, signal} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {SvgIconComponent} from 'angular-svg-icon';
 import {TuiPanModule} from '@taiga-ui/cdk';
@@ -20,8 +20,6 @@ const SVG_CONFIG = {
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MapPageComponent implements AfterViewInit {
-    @ViewChild(SvgIconComponent) icon!: SvgIconComponent;
-
     private readonly router = inject(Router);
     private readonly route = inject(ActivatedRoute);
     private readonly index = this.route.snapshot.queryParamMap.get('id');
@@ -37,10 +35,6 @@ export class MapPageComponent implements AfterViewInit {
         this.initMap();
     }
 
-    load(e: any) {
-        console.log(e);
-    }
-
     back(): void {
         this.router.navigate([Pages.Game], {queryParams: {id: this.index}});
     }
@@ -49,8 +43,6 @@ export class MapPageComponent implements AfterViewInit {
         const height = this.containerEl.getBoundingClientRect().height;
         const width = (height / SVG_CONFIG.height) * SVG_CONFIG.width;
         const offset = (width - window.outerWidth) / 2;
-
-        console.log(height);
 
         this.svgWidth.set(width);
         this.svgHeight.set(height);

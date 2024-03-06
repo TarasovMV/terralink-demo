@@ -7,6 +7,7 @@ import {ButtonComponent} from '@terralink-demo/ui';
 import {GamePlayComponent} from './components/game-play/game-play.component';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Pages} from '@terralink-demo/models';
+import {CardMeta, CARDS} from './domain';
 
 @Component({
     selector: 'game-page',
@@ -30,6 +31,7 @@ export class GamePageComponent implements AfterViewInit {
     private readonly index = +(this.route.snapshot.queryParamMap.get('id') || 0);
 
     readonly cardIndex = signal<number>(this.index);
+    readonly cards = signal<CardMeta[]>([...CARDS]);
 
     private get swiperElement(): any {
         return document.querySelector('swiper-container');

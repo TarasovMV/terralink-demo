@@ -4,16 +4,12 @@
 </div>
 
 <swiper-container slides-per-view="1">
-    <swiper-slide><game-card>1</game-card></swiper-slide>
-    <swiper-slide><game-card>2</game-card></swiper-slide>
-    <swiper-slide><game-card>3</game-card></swiper-slide>
-    <swiper-slide><game-card>4</game-card></swiper-slide>
-    <swiper-slide><game-card>5</game-card></swiper-slide>
-    <swiper-slide><game-card>6</game-card></swiper-slide>
-    <swiper-slide><game-card>7</game-card></swiper-slide>
+    @for (card of cards(); track card.id) {
+        <swiper-slide><game-card (openMap)="goToMap()" [data]="card"></game-card></swiper-slide>
+    }
 </swiper-container>
 
-<game-pager class="tui-space_top-4" [count]="7" [activeIdx]="cardIndex()"></game-pager>
+<game-pager class="tui-space_top-4" [count]="cards().length" [activeIdx]="cardIndex()"></game-pager>
 
 <ui-button class="tui-space_top-12" type="secondary">Получить фрагмент</ui-button>
 <div (click)="goToMap()" class="tui-space_top-4 text-button">Карта мероприятия</div>
