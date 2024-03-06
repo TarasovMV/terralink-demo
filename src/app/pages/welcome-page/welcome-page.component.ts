@@ -27,13 +27,12 @@ export class WelcomePageComponent {
     readonly showLoader = signal<boolean>(false);
 
     openScanner(): void {
-        this.openConfirm('hellow');
-        // this.dialog
-        //     .open<string>(new PolymorpheusComponent(ScannerComponent), {
-        //         size: 'page',
-        //     })
-        //     .pipe(takeUntil(this.destroy$))
-        //     .subscribe(res => res && this.openConfirm(res));
+        this.dialog
+            .open<string>(new PolymorpheusComponent(ScannerComponent), {
+                size: 'page',
+            })
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(res => res && this.openConfirm(res));
     }
 
     goToRegister(): void {
