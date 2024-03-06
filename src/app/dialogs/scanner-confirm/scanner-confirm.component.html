@@ -2,11 +2,11 @@
     Подтвердите правильность распознанных данных
 </div>
 
-<div class="text-body">
-    {{ email }}
-</div>
+<div class="tui-space_bottom-4 text-label">Ваша почта?</div>
+
+<div class="text-email">{{ email }}</div>
 
 <div class="space"></div>
 
-<ui-button class="tui-space_bottom-4" (click)="accept()">Подтверждаю</ui-button>
-<ui-button type="secondary" (click)="cancel()">Отмена</ui-button>
+<ui-button (click)="accept()" class="tui-space_bottom-4">Подтверждаю</ui-button>
+<ui-button (click)="cancel()" type="secondary">Отмена</ui-button>
