@@ -23,6 +23,7 @@
         "@maskito/kit": "^2.1.0",
         "@maskito/phone": "^2.1.0",
         "@nx/angular": "18.1.0",
+        "@supabase/supabase-js": "^2.39.7",
         "@taiga-ui/addon-mobile": "^3.69.0",
         "@taiga-ui/cdk": "^3.69.0",
         "@taiga-ui/core": "^3.69.0",
@@ -78,5 +79,10 @@
     },
     "nx": {
         "includedScripts": []
+    },
+    "overrides": {
+        "@supabase/supabase-js": {
+            "@supabase/gotrue-js": "2.61.0"
+        }
     }
 }

@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, inject, signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {ButtonComponent} from '@terralink-demo/ui';
 import {Router} from '@angular/router';
@@ -6,9 +6,11 @@ import {Pages} from '@terralink-demo/models';
 import {TuiDialogService} from '@taiga-ui/core';
 import {PolymorpheusComponent} from '@tinkoff/ng-polymorpheus';
 import {ScannerComponent} from '../../dialogs/scanner/scanner.component';
-import {takeUntil} from 'rxjs';
+import {finalize, takeUntil} from 'rxjs';
 import {TuiDestroyService} from '@taiga-ui/cdk';
 import {ScannerConfirmComponent} from '../../dialogs/scanner-confirm/scanner-confirm.component';
+import {SupabaseService} from '../../services/supabase.service';
+import {LoaderService} from '../../services/loader.service';
 
 @Component({
     selector: 'welcome-page',
@@ -20,11 +22,11 @@ import {ScannerConfirmComponent} from '../../dialogs/scanner-confirm/scanner-con
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WelcomePageComponent {
+    private readonly showLoader = inject(LoaderService).showLoader;
+    private readonly supabaseService = inject(SupabaseService);
     private readonly router = inject(Router);
     private readonly dialog = inject(TuiDialogService);
     private readonly destroy$ = inject(TuiDestroyService);
-
-    readonly showLoader = signal<boolean>(false);
 
     openScanner(): void {
         this.dialog
@@ -56,6 +58,14 @@ export class WelcomePageComponent {
                 closeable: false,
             })
             .pipe(takeUntil(this.destroy$))
-            .subscribe(res => res && this.goToRules());
+            .subscribe(res => res && this.signQrCode(email));
+    }
+
+    private signQrCode(email: string): void {
+        this.showLoader.set(true);
+        this.supabaseService
+            .signQr(email)
+            .pipe(finalize(() => this.showLoader.set(false)))
+            .subscribe(() => this.goToRules());
     }
 }
