@@ -82,7 +82,7 @@ export class WelcomePageComponent {
                             break;
                     }
 
-                    this.alertService.open(message, {status: 'error'});
+                    this.alertService.open(message, {status: 'error'}).subscribe();
                 },
             });
     }
