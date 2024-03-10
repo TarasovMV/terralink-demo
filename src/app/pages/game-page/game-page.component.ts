@@ -8,6 +8,7 @@ import {GamePlayComponent} from './components/game-play/game-play.component';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Pages} from '@terralink-demo/models';
 import {CardMeta, CARDS} from './domain';
+import {SupabaseService} from '../../services/supabase.service';
 
 @Component({
     selector: 'game-page',
@@ -28,6 +29,7 @@ import {CardMeta, CARDS} from './domain';
 export class GamePageComponent implements AfterViewInit {
     private readonly router = inject(Router);
     private readonly route = inject(ActivatedRoute);
+    private readonly supabaseService = inject(SupabaseService);
     private readonly index = +(this.route.snapshot.queryParamMap.get('id') || 0);
 
     readonly cardIndex = signal<number>(this.index);
@@ -45,6 +47,10 @@ export class GamePageComponent implements AfterViewInit {
 
     goToMap(): void {
         this.router.navigate([Pages.Map], {queryParams: {id: this.cardIndex()}});
+    }
+
+    tempQuit(): void {
+        this.supabaseService.signOut().subscribe(() => this.router.navigate([Pages.Welcome]));
     }
 
     private handleSwipe(): void {

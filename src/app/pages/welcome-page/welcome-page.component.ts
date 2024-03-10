@@ -2,8 +2,8 @@ import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {ButtonComponent} from '@terralink-demo/ui';
 import {Router} from '@angular/router';
-import {Pages} from '@terralink-demo/models';
-import {TuiDialogService} from '@taiga-ui/core';
+import {Pages, SupabaseErrors} from '@terralink-demo/models';
+import {TuiAlertService, TuiDialogService} from '@taiga-ui/core';
 import {PolymorpheusComponent} from '@tinkoff/ng-polymorpheus';
 import {ScannerComponent} from '../../dialogs/scanner/scanner.component';
 import {finalize, takeUntil} from 'rxjs';
@@ -11,6 +11,7 @@ import {TuiDestroyService} from '@taiga-ui/cdk';
 import {ScannerConfirmComponent} from '../../dialogs/scanner-confirm/scanner-confirm.component';
 import {SupabaseService} from '../../services/supabase.service';
 import {LoaderService} from '../../services/loader.service';
+import {NETWORK_ERROR} from '../../domain';
 
 @Component({
     selector: 'welcome-page',
@@ -24,6 +25,7 @@ import {LoaderService} from '../../services/loader.service';
 export class WelcomePageComponent {
     private readonly showLoader = inject(LoaderService).showLoader;
     private readonly supabaseService = inject(SupabaseService);
+    private readonly alertService = inject(TuiAlertService);
     private readonly router = inject(Router);
     private readonly dialog = inject(TuiDialogService);
     private readonly destroy$ = inject(TuiDestroyService);
@@ -66,6 +68,22 @@ export class WelcomePageComponent {
         this.supabaseService
             .signQr(email)
             .pipe(finalize(() => this.showLoader.set(false)))
-            .subscribe(() => this.goToRules());
+            .subscribe({
+                next: () => this.goToRules(),
+                error: error => {
+                    let message = 'Неизвестная ошибка, попробуйте позже';
+
+                    switch (error) {
+                        case SupabaseErrors.NetworkError:
+                            message = NETWORK_ERROR;
+                            break;
+                        case SupabaseErrors.MetaError:
+                            message = 'Не смогли найти пользователя по данному QR коду, попробуйте другой';
+                            break;
+                    }
+
+                    this.alertService.open(message, {status: 'error'});
+                },
+            });
     }
 }

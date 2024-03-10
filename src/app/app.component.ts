@@ -1,11 +1,11 @@
-import {TuiRootModule, TuiDialogModule, TuiLoaderModule} from '@taiga-ui/core';
+import {TuiRootModule, TuiDialogModule, TuiLoaderModule, TuiAlertModule} from '@taiga-ui/core';
 import {Component, inject} from '@angular/core';
 import {RouterModule} from '@angular/router';
 import {LoaderService} from './services/loader.service';
 
 @Component({
     standalone: true,
-    imports: [RouterModule, TuiRootModule, TuiDialogModule, TuiLoaderModule],
+    imports: [RouterModule, TuiRootModule, TuiDialogModule, TuiAlertModule, TuiLoaderModule],
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrl: './app.component.less',

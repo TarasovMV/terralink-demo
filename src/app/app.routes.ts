@@ -1,6 +1,6 @@
 import {Route} from '@angular/router';
 import {Pages} from '@terralink-demo/models';
-import {authGuard} from './guards';
+import {alreadyAuthGuard, authGuard} from './guards';
 
 const DEFAULT_PAGE = Pages.Game;
 
@@ -9,15 +9,18 @@ export const appRoutes: Route[] = [
         path: Pages.Welcome,
         loadComponent: () =>
             import('../app/pages/welcome-page/welcome-page.component').then(c => c.WelcomePageComponent),
+        canActivate: [alreadyAuthGuard],
     },
     {
         path: Pages.Register,
         loadComponent: () =>
             import('../app/pages/register-page/register-page.component').then(c => c.RegisterPageComponent),
+        canActivate: [alreadyAuthGuard],
     },
     {
         path: Pages.Auth,
         loadComponent: () => import('../app/pages/auth-page/auth-page.component').then(c => c.AuthPageComponent),
+        canActivate: [alreadyAuthGuard],
     },
     {
         path: Pages.Game,

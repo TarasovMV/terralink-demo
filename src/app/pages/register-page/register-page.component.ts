@@ -1,11 +1,16 @@
 import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {MaskitoDirective} from '@maskito/angular';
-import {PHONE_MASK, phoneValidator} from '../../domain';
+import {NETWORK_ERROR, PHONE_MASK, phoneValidator} from '../../domain';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ButtonComponent} from '@terralink-demo/ui';
 import {Router} from '@angular/router';
-import {Pages} from '@terralink-demo/models';
+import {Pages, SupabaseErrors, UserMeta} from '@terralink-demo/models';
+import {SupabaseService} from '../../services/supabase.service';
+import {clearPhoneNumber} from '../../utils';
+import {LoaderService} from '../../services/loader.service';
+import {TuiAlertService} from '@taiga-ui/core';
+import {finalize} from 'rxjs';
 
 @Component({
     selector: 'register-page',
@@ -17,6 +22,9 @@ import {Pages} from '@terralink-demo/models';
 })
 export class RegisterPageComponent {
     private readonly router = inject(Router);
+    private readonly supabaseService = inject(SupabaseService);
+    private readonly showLoader = inject(LoaderService).showLoader;
+    private readonly alertService = inject(TuiAlertService);
 
     readonly phoneMask = PHONE_MASK;
     readonly form = new FormGroup({
@@ -25,7 +33,7 @@ export class RegisterPageComponent {
         email: new FormControl<string>('', {validators: [Validators.required, Validators.email], nonNullable: true}),
         organization: new FormControl<string>('', {validators: [Validators.required], nonNullable: true}),
         position: new FormControl<string>('', {validators: [Validators.required], nonNullable: true}),
-        agreement: new FormControl<boolean>(false, {validators: [Validators.required], nonNullable: true}),
+        agreement: new FormControl<boolean>(false, {validators: [Validators.requiredTrue], nonNullable: true}),
     });
 
     goToBack(): void {
@@ -39,8 +47,44 @@ export class RegisterPageComponent {
     }
 
     submitForm(): void {
-        console.log('form', this.form.valid, this.form.value);
+        if (!this.form.valid) {
+            this.form.markAllAsTouched();
+            return;
+        }
 
-        this.router.navigate([Pages.Rules]);
+        const meta = this.mapToUserMeta(this.form.value);
+
+        this.showLoader.set(true);
+
+        this.supabaseService
+            .fullSignUp(meta.email, meta)
+            .pipe(finalize(() => this.showLoader.set(false)))
+            .subscribe({
+                next: () => this.router.navigate([Pages.Rules]),
+                error: error => {
+                    let message = 'Неизвестная ошибка при регистрации, попробуйте позже';
+
+                    switch (error) {
+                        case SupabaseErrors.NetworkError:
+                            message = NETWORK_ERROR;
+                            break;
+                        case SupabaseErrors.UserAlreadyRegistered:
+                            message = 'Пользователь с такой почтой уже зарегистрирован';
+                            break;
+                    }
+
+                    this.alertService.open(message, {status: 'error'}).subscribe();
+                },
+            });
+    }
+
+    private mapToUserMeta(value: typeof this.form.value): UserMeta {
+        return {
+            fullname: value.fio!,
+            email: value.email!,
+            phone_number: clearPhoneNumber(value.phone!),
+            organization: value.organization!,
+            position: value.position!,
+        };
     }
 }
