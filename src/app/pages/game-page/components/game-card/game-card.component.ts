@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
 import {CommonModule} from '@angular/common';
 import {ButtonComponent} from '@terralink-demo/ui';
 import {SvgIconComponent} from 'angular-svg-icon';
-import {CardMeta} from '../../domain';
+import {CardMeta} from '@terralink-demo/models';
 
 @Component({
     selector: 'game-card',
@@ -14,9 +14,10 @@ import {CardMeta} from '../../domain';
 })
 export class GameCardComponent {
     @Input({required: true}) data!: CardMeta;
+    @Input() done: undefined | boolean = false;
     @Output() readonly openMap = new EventEmitter<void>();
 
     get statusText(): string {
-        return this.data.done ? 'Фрагмент получен' : 'Фрагмент не получен';
+        return this.done ? 'Фрагмент получен' : 'Фрагмент не получен';
     }
 }

@@ -1,4 +1,4 @@
-import {CardMeta} from './card-meta.interface';
+import {CardMeta} from '@terralink-demo/models';
 
 export const CARDS = [
     {
@@ -8,7 +8,6 @@ export const CARDS = [
     },
     {
         id: 2,
-        done: true,
         title: 'HR - сервисы',
         body: 'Улучшите внутреннюю коммуникацию, ускорьте найм персонала и объедините ИТ-сервисы с мобильным корпоративным порталом ТерраЛинк Разработка!',
     },

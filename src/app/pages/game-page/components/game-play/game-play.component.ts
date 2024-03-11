@@ -14,7 +14,7 @@ import {CommonModule} from '@angular/common';
     },
 })
 export class GamePlayComponent {
-    @Input() progress = 2;
+    @Input() progress = 0;
 
     readonly status = signal<'play' | 'pause'>('play');
 
