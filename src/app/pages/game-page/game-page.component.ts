@@ -56,7 +56,9 @@ export class GamePageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     readonly cardIndex = signal<number>(+(this.route.snapshot.queryParamMap.get('id') || 0));
     readonly cards = signal<CardMeta[]>([...CARDS]);
-    readonly progress = computed<number>(() => this.cards().reduce((acc, next) => acc + (next.done ? 1 : 0), 0));
+    readonly progress = computed<number>(() => {
+        return this.cards().reduce((acc, next) => acc + (next.done ? 1 : 0), 0);
+    });
 
     private get swiperElement(): any {
         return document.querySelector('swiper-container');

@@ -1,6 +1,6 @@
 <div class="header tui-space_bottom-8">
     <div class="tui-space_right-4">Соберите все&nbsp;фрагменты мелодии</div>
-    <game-play [progress]="progress()" (click)="tempQuit()"></game-play>
+    <game-play [count]="cards().length" [progress]="progress()"></game-play>
 </div>
 
 <swiper-container slides-per-view="1">
