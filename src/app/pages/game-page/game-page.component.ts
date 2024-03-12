@@ -98,6 +98,10 @@ export class GamePageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.router.navigate([Pages.Map], {queryParams: {id: this.cardIndex()}});
     }
 
+    goToPresentation(): void {
+        this.router.navigate([Pages.Presentation], {queryParams: {id: this.cardIndex()}});
+    }
+
     tempQuit(): void {
         this.supabaseService.signOut().subscribe(() => this.router.navigate([Pages.Welcome]));
     }

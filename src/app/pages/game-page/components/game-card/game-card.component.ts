@@ -15,7 +15,9 @@ import {CardMeta} from '@terralink-demo/models';
 export class GameCardComponent {
     @Input({required: true}) data!: CardMeta;
     @Input() done: undefined | boolean = false;
+
     @Output() readonly openMap = new EventEmitter<void>();
+    @Output() readonly openPresentation = new EventEmitter<void>();
 
     get statusText(): string {
         return this.done ? 'Фрагмент получен' : 'Фрагмент не получен';

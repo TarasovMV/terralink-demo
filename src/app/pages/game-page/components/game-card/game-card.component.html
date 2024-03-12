@@ -13,7 +13,7 @@
     Как добраться?
 </ui-button>
 
-<ui-button type="card">
+<ui-button (click)="openPresentation.emit()" type="card">
     <svg-icon class="tui-space_right-3" src="assets/announcement.svg"></svg-icon>
     Подробнее
 </ui-button>

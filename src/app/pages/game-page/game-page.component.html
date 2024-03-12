@@ -6,7 +6,12 @@
 <swiper-container slides-per-view="1">
     @for (card of cards(); track card.id) {
         <swiper-slide>
-            <game-card (openMap)="goToMap()" [data]="card" [done]="card.done"></game-card>
+            <game-card
+                (openPresentation)="goToPresentation()"
+                (openMap)="goToMap()"
+                [data]="card"
+                [done]="card.done"
+            ></game-card>
         </swiper-slide>
     }
 </swiper-container>
