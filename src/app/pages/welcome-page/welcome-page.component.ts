@@ -12,11 +12,12 @@ import {ScannerConfirmComponent} from '../../dialogs/scanner-confirm/scanner-con
 import {SupabaseService} from '../../services/supabase.service';
 import {LoaderService} from '../../services/loader.service';
 import {NETWORK_ERROR} from '../../domain';
+import {SvgIconComponent} from 'angular-svg-icon';
 
 @Component({
     selector: 'welcome-page',
     standalone: true,
-    imports: [CommonModule, ButtonComponent],
+    imports: [CommonModule, ButtonComponent, SvgIconComponent],
     providers: [TuiDestroyService],
     templateUrl: './welcome-page.component.html',
     styleUrl: './welcome-page.component.less',

@@ -3,6 +3,6 @@ export interface UserMeta {
     fullname: string;
     email: string;
     phone_number: string;
-    organization: string;
-    position: string;
+    organization?: string | null;
+    position?: string | null;
 }

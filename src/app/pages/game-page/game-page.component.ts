@@ -26,6 +26,7 @@ import {PolymorpheusComponent} from '@tinkoff/ng-polymorpheus';
 import {ScannerComponent} from '../../dialogs/scanner/scanner.component';
 import {TuiAlertService, TuiDialogService} from '@taiga-ui/core';
 import {TuiDestroyService} from '@taiga-ui/cdk';
+import {SvgIconComponent} from 'angular-svg-icon';
 
 @Component({
     selector: 'game-page',
@@ -37,6 +38,7 @@ import {TuiDestroyService} from '@taiga-ui/cdk';
         GamePagerComponent,
         ButtonComponent,
         GamePlayComponent,
+        SvgIconComponent,
     ],
     providers: [TuiDestroyService],
     schemas: [NO_ERRORS_SCHEMA],

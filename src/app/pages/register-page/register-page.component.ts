@@ -30,9 +30,12 @@ export class RegisterPageComponent {
     readonly form = new FormGroup({
         fio: new FormControl<string>('', {validators: [Validators.required], nonNullable: true}),
         phone: new FormControl<string>('', {validators: [phoneValidator('RU')], nonNullable: true}),
-        email: new FormControl<string>('', {validators: [Validators.required, Validators.email], nonNullable: true}),
-        organization: new FormControl<string>('', {validators: [Validators.required], nonNullable: true}),
-        position: new FormControl<string>('', {validators: [Validators.required], nonNullable: true}),
+        email: new FormControl<string>(' ', {
+            validators: [Validators.required, Validators.email],
+            nonNullable: true,
+        }),
+        organization: new FormControl<string>(''),
+        position: new FormControl<string>(''),
         agreement: new FormControl<boolean>(false, {validators: [Validators.requiredTrue], nonNullable: true}),
     });
 
@@ -43,7 +46,7 @@ export class RegisterPageComponent {
     checkControlError(controlName: keyof typeof this.form.controls): boolean {
         const control = this.form.controls[controlName];
 
-        return !!control.errors && control.dirty && control.touched;
+        return !!control.errors && control.touched;
     }
 
     submitForm(): void {
@@ -83,8 +86,8 @@ export class RegisterPageComponent {
             fullname: value.fio!,
             email: value.email!,
             phone_number: clearPhoneNumber(value.phone!),
-            organization: value.organization!,
-            position: value.position!,
+            organization: value.organization,
+            position: value.position,
         };
     }
 }
