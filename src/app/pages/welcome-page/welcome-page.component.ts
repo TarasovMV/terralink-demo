@@ -35,6 +35,7 @@ export class WelcomePageComponent {
         this.dialog
             .open<string>(new PolymorpheusComponent(ScannerComponent), {
                 size: 'page',
+                closeable: false,
             })
             .pipe(takeUntil(this.destroy$))
             .subscribe(res => res && this.openConfirm(res));

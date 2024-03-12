@@ -88,6 +88,7 @@ export class GamePageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.dialog
             .open<string>(new PolymorpheusComponent(ScannerComponent), {
                 size: 'page',
+                closeable: false,
             })
             .pipe(takeUntil(this.destroy$))
             .subscribe(res => res && this.doneCard(res));
