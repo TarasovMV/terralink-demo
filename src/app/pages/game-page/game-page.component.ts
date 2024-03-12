@@ -111,8 +111,16 @@ export class GamePageComponent implements OnInit, OnDestroy, AfterViewInit {
         }
 
         const id = +strCardId.trim().replace(standPrefix, '');
+        const cards = this.cards();
+
+        if (cards.some(c => c.id === id && c.done)) {
+            this.showCardError('Данный QR-код уже был использован');
+
+            return;
+        }
 
         this.showLoader.set(true);
+
         this.gameService
             .setDone(id)
             .pipe(
@@ -120,23 +128,23 @@ export class GamePageComponent implements OnInit, OnDestroy, AfterViewInit {
                 takeUntil(this.destroy$),
             )
             .subscribe(() => {
-                this.cards.update(cards => {
-                    const card = cards.find(c => c.id === id);
+                const card = cards.find(c => c.id === id);
 
-                    if (card) {
-                        card.done = true;
-                        this.updateCardIndex(id - 1);
-                    } else {
-                        this.showCardError();
-                    }
+                if (card) {
+                    card.done = true;
+                    this.updateCardIndex(id - 1);
+                } else {
+                    this.showCardError();
+                }
 
-                    return [...cards];
-                });
+                this.cards.set([...cards]);
+
+                setTimeout(() => this.gameService.forcePlayMusic.set(true));
             });
     }
 
-    private showCardError(): void {
-        this.alertService.open('Распознан неверный QR-код. Попробуйте еще раз', {status: 'error'}).subscribe();
+    private showCardError(msg = 'Распознан неверный QR-код. Попробуйте еще раз'): void {
+        this.alertService.open(msg, {status: 'error'}).subscribe();
     }
 
     private handleSwipe(): void {

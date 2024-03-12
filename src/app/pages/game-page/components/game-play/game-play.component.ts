@@ -1,5 +1,6 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input, signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, effect, inject, Input, signal} from '@angular/core';
 import {CommonModule} from '@angular/common';
+import {GameService} from '../../../../services/game.service';
 
 @Component({
     selector: 'game-play',
@@ -14,34 +15,31 @@ import {CommonModule} from '@angular/common';
     },
 })
 export class GamePlayComponent {
-    @Input() set progress(value: number) {
-        if (!value) {
-            return;
-        }
-
-        this.progressCount = value;
-        this.progressArray = Array(value)
-            .fill(null)
-            .map((_, idx) => idx < value);
-
-        value && this.play();
-    }
+    @Input() progress = 0;
     @Input() count = 0;
 
-    private readonly cdRef = inject(ChangeDetectorRef);
+    private readonly forcePlay = inject(GameService).forcePlayMusic;
     private audio = new Audio();
-    private progressCount = 0;
     readonly status = signal<'play' | 'pause'>('play');
-    progressArray: boolean[] = [];
+
+    get progressArray() {
+        return Array(this.progress)
+            .fill(null)
+            .map((_, idx) => idx < this.progress);
+    }
 
     private get audioSrc(): string {
-        if (this.count === this.progressCount) {
+        if (this.count === this.progress) {
             return `assets/sounds/complete.mp3`;
         }
-        return `assets/sounds/${this.progressCount}.mp3`;
+        return `assets/sounds/${this.progress}.mp3`;
     }
 
     constructor() {
+        effect(() => {
+            this.forcePlay() && this.play();
+        });
+
         this.audio.onended = () => {
             this.status.set('play');
         };
@@ -57,20 +55,18 @@ export class GamePlayComponent {
     }
 
     private play(): void {
-        if (!this.progressCount) {
+        if (!this.progress) {
             return;
         }
 
         this.audio.src = this.audioSrc;
-        this.progress = 0;
-        this.audio.play();
-
-        this.status.set('pause');
+        this.audio.currentTime = 0;
+        this.audio.play().then(() => this.status.set('pause'));
     }
 
     private pause(): void {
         this.audio.pause();
-        this.progress = 0;
+        this.audio.currentTime = 0;
 
         this.status.set('play');
     }

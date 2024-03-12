@@ -23,11 +23,13 @@ export class SupabaseService {
     }
 
     getCardsInfo(): Observable<CardInfo[]> {
-        return of([]).pipe(delay(500));
+        return from(this.supabase.from('user_stand').select('*').eq('user_id', this.session!.user.id)).pipe(
+            map(res => res?.data ?? []),
+        );
     }
 
     setCardDone(cardId: number): Observable<unknown> {
-        return of({}).pipe(delay(500));
+        return from(this.supabase.from('user_stand').insert({stand_id: cardId, user_id: this.session!.user.id}));
     }
 
     getSession() {

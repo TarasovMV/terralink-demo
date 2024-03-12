@@ -1,4 +1,4 @@
-import {inject, Injectable} from '@angular/core';
+import {inject, Injectable, signal} from '@angular/core';
 import {SupabaseService} from './supabase.service';
 import {catchError, map, Observable, of} from 'rxjs';
 import {CardMeta} from '@terralink-demo/models';
@@ -9,6 +9,9 @@ import {CARDS} from '../domain/cards.const';
 })
 export class GameService {
     private readonly supabaseService = inject(SupabaseService);
+    readonly forcePlayMusic = signal(true, {
+        equal: () => false,
+    });
 
     getCards(): Observable<CardMeta[]> {
         return this.supabaseService
