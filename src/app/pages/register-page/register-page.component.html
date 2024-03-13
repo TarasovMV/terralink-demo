@@ -2,16 +2,16 @@
 <div class="tui-space_bottom-2 text-title">Регистрация на&nbsp;мероприятие</div>
 <div class="tui-space_bottom-10 text-body">Пожалуйста, обратите внимание, что внесение данных, таких как телефон, электронная почта, организация  и должность, является добровольным. Вы можете указать любые данные. Эта информация пригодится Вам   для повторного входа в приложение</div>
 <div [formGroup]="form" class="form">
-    <div class="text-label">Введите ваше ФИО</div>
+    <div class="text-label">Введите ваше ФИО *</div>
     <input [class.error]="checkControlError('fio')" formControlName="fio" placeholder="Иванов Иван Иванович"
            type="text" />
 
-    <div class="text-label">Введите Ваш телефон</div>
+    <div class="text-label">Введите Ваш телефон *</div>
     <input [class.error]="checkControlError('phone')" [maskito]="phoneMask" formControlName="phone"
            placeholder="+7 999 999 99 99"
            type="tel" />
 
-    <div class="text-label">Введите Ваш E-mail</div>
+    <div class="text-label">Введите Ваш E-mail *</div>
     <input [class.error]="checkControlError('email')" formControlName="email" placeholder="E-mail" type="email" />
 
     <div class="text-label">Наименование организации</div>
