@@ -17,9 +17,22 @@ export class SupabaseService {
     constructor() {
         this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey);
 
+        this.fromSupabase(this.supabase.from('user_presentation').select('*')).pipe(
+        ).subscribe(res => console.log(res));
+
         // this.signOut();
         // this.getAllProfiles().subscribe(x => console.log(x));
         // this.updateProfile();
+    }
+
+    requestPresentation(id: number, email: string): Observable<unknown> {
+        return from(this.supabase.from('user_presentation').insert({stand_id: id, email, user_id: this.session!.user.id}))
+    }
+
+    checkPresentation(id: number): Observable<boolean> {
+        return this.fromSupabase(this.supabase.from('user_presentation').select('*').match({user_id: this.session!.user.id, stand_id: id})).pipe(
+            map(({data}) => !!data?.length),
+        );
     }
 
     getCardsInfo(): Observable<CardInfo[]> {
@@ -125,7 +138,7 @@ export class SupabaseService {
     }
 
     private getAllProfiles() {
-        return from(this.supabase.from('user_meta').select(`*`));
+        return from(this.supabase.from('user_meta').select(`*`).eq('phone_number', '+79255999987'));
     }
 
     private fromSupabase<T extends PromiseLike<any>>(request: T) {

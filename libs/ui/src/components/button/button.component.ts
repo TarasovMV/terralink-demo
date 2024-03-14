@@ -12,5 +12,5 @@ import {SvgIconComponent} from 'angular-svg-icon';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ButtonComponent {
-    @Input() type: 'primary' | 'secondary' | 'close' | 'close-black' | 'card' = 'primary';
+    @Input() type: 'primary' | 'secondary' | 'close' | 'close-black' | 'card' | 'disabled' = 'primary';
 }

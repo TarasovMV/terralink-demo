@@ -1,0 +1,26 @@
+@if(viewType() === 'form') {
+<div class="wrapper">
+<div class="header tui-space_bottom-4">
+<div class="text-title">Подтвердите, пожалуйста, Ваш email&nbsp;-&nbsp;адрес</div>
+<ui-button (click)="close()" type="close"></ui-button>
+</div>
+<div class="text-body tui-space_bottom-12">Если указан неверный адрес электронной почты, пожалуйста, исправьте на корректный</div>
+<input class="tui-space_bottom-6" [class.error]="checkControlError()" [formControl]="control"
+placeholder="E-mail"
+type="email" />
+<ui-button (click)="submit()">
+@if (!showLoader()) {
+{{ 'Запросить презентацию' }}
+} @else {
+<tui-loader [inheritColor]="true" [showLoader]="true"></tui-loader>
+}
+</ui-button>
+</div>
+} @else {
+<div class="wrapper wrapper_banner">
+<ui-button style="margin-left: auto" (click)="close()" type="close"></ui-button>
+<img width="136" height="136" class="tui-space_vertical-4" src="assets/send.png">
+<div class="text-banner">Мы свяжемся с Вами  в ближайшее время!</div>
+</div>
+
+}

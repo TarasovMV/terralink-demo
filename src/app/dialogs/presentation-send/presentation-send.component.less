@@ -1,0 +1,49 @@
+:host {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-flow: column;
+    padding: 0 var(--side-padding);
+    min-height: var(--max-height);
+    backdrop-filter: blur(2px);
+    box-sizing: border-box;
+}
+
+.wrapper {
+    width: 100%;
+    padding: 2rem 1rem;
+    border-radius: 1rem;
+    box-sizing: border-box;
+    background: var(--color-black);
+    transform: translateY(50%);
+
+    &_banner {
+        display: flex;
+        flex-flow: column;
+        align-items: center;
+    }
+}
+
+.header {
+    display: flex;
+}
+
+.text {
+    &-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+    }
+
+    &-body {
+        font-size: 15px;
+        font-weight: 600;
+    }
+
+    &-banner {
+        text-align: center;
+        font-weight: 700;
+        font-size: 1.25rem;
+    }
+}

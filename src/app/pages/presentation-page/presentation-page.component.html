@@ -25,4 +25,4 @@
     </tr>
     </tbody>
 </table>
-<ui-button><span class="text-button">Запросить презентацию решений</span></ui-button>
+<ui-button [type]="buttonType()" (click)="openSend()"><span class="text-button">Запросить презентацию решений</span></ui-button>
