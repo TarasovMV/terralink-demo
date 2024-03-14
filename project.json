@@ -27,7 +27,8 @@
             "glob": "**/*",
             "input": "node_modules/@taiga-ui/icons/src",
             "output": "assets/taiga-ui/icons"
-          }
+          },
+          "src/manifest.webmanifest"
         ],
         "styles": [
           "node_modules/@taiga-ui/core/styles/taiga-ui-theme.less",
@@ -56,7 +57,8 @@
               "maximumError": "4kb"
             }
           ],
-          "outputHashing": "all"
+          "outputHashing": "all",
+          "serviceWorker": "ngsw-config.json"
         },
         "development": {
           "optimization": false,
