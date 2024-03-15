@@ -1,5 +1,5 @@
-import {TuiRootModule, TuiDialogModule, TuiLoaderModule, TuiAlertModule} from '@taiga-ui/core';
-import {Component, inject} from '@angular/core';
+import {TuiRootModule, TuiDialogModule, TuiLoaderModule, TuiAlertModule, TuiAlertService} from '@taiga-ui/core';
+import {Component, HostListener, inject, signal} from '@angular/core';
 import {RouterModule} from '@angular/router';
 import {LoaderService} from './services/loader.service';
 
@@ -12,6 +12,9 @@ import {LoaderService} from './services/loader.service';
 })
 export class AppComponent {
     readonly showLoader = inject(LoaderService).showLoader;
+    readonly showPwaInstall = signal(false);
+    readonly alertService = inject(TuiAlertService);
+    promptEvent: any;
 
     constructor() {
         // TODO: refactor service
@@ -23,4 +26,28 @@ export class AppComponent {
             document.documentElement.style.setProperty('--vh', `${vh}px`);
         });
     }
+
+    @HostListener('window:beforeinstallprompt', ['$event'])
+    onbeforeinstallprompt(e: Event) {
+        e.preventDefault();
+        this.promptEvent = e;
+
+        if (e) {
+            this.alertService.open('pwa ready').subscribe();
+        }
+    }
+
+    // installPWA() {
+    //     this.promptEvent.prompt();
+    // }
+    //
+    // shouldInstall(): boolean {
+    //     const;
+    //
+    //     return !this.isRunningStandalone() && this.promptEvent;
+    // }
+    //
+    // isRunningStandalone(): boolean {
+    //     return window.matchMedia('(display-mode: standalone)').matches;
+    // }
 }
