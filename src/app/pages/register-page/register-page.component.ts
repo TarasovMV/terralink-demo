@@ -72,7 +72,7 @@ export class RegisterPageComponent {
                             message = NETWORK_ERROR;
                             break;
                         case SupabaseErrors.UserAlreadyRegistered:
-                            message = 'Пользователь с такой почтой уже зарегистрирован';
+                            message = 'Пользователь с такой почтой или телефоном уже зарегистрирован';
                             break;
                     }
 

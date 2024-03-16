@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {AuthSession, createClient, SupabaseClient} from '@supabase/supabase-js';
 import {environment} from '../../environment';
-import {catchError, delay, from, map, Observable, of, switchMap, tap, throwError} from 'rxjs';
+import {catchError, delay, forkJoin, from, map, Observable, of, switchMap, tap, throwError} from 'rxjs';
 import {CardInfo, SupabaseErrors, UserMeta} from '@terralink-demo/models';
 import {clearPhoneNumber} from '../utils';
 
@@ -17,8 +17,9 @@ export class SupabaseService {
     constructor() {
         this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey);
 
-        this.fromSupabase(this.supabase.from('user_presentation').select('*')).pipe(
-        ).subscribe(res => console.log(res));
+        this.fromSupabase(this.supabase.from('user_presentation').select('*'))
+            .pipe()
+            .subscribe(res => console.log(res));
 
         // this.signOut();
         // this.getAllProfiles().subscribe(x => console.log(x));
@@ -26,13 +27,15 @@ export class SupabaseService {
     }
 
     requestPresentation(id: number, email: string): Observable<unknown> {
-        return from(this.supabase.from('user_presentation').insert({stand_id: id, email, user_id: this.session!.user.id}))
+        return from(
+            this.supabase.from('user_presentation').insert({stand_id: id, email, user_id: this.session!.user.id}),
+        );
     }
 
     checkPresentation(id: number): Observable<boolean> {
-        return this.fromSupabase(this.supabase.from('user_presentation').select('*').match({user_id: this.session!.user.id, stand_id: id})).pipe(
-            map(({data}) => !!data?.length),
-        );
+        return this.fromSupabase(
+            this.supabase.from('user_presentation').select('*').match({user_id: this.session!.user.id, stand_id: id}),
+        ).pipe(map(({data}) => !!data?.length));
     }
 
     getCardsInfo(): Observable<CardInfo[]> {
@@ -68,6 +71,16 @@ export class SupabaseService {
     fullSignUp(email: string, meta?: UserMeta) {
         return (meta ? of(meta) : this.getServiceMeta(email)).pipe(
             switchMap(res => (!res ? throwError(() => SupabaseErrors.MetaError) : of(res))),
+            switchMap(res =>
+                forkJoin([
+                    this.checkProfileByField('email', email),
+                    this.checkProfileByField('phone_number', clearPhoneNumber(res.phone_number)),
+                ]).pipe(
+                    switchMap(([checkEmail, checkPhone]) =>
+                        !checkEmail && !checkPhone ? of(res) : throwError(() => SupabaseErrors.UserAlreadyRegistered),
+                    ),
+                ),
+            ),
             switchMap(res =>
                 this.signUp(email).pipe(
                     map(user_id => ({...res, user_id, phone_number: clearPhoneNumber(res.phone_number)})),
