@@ -1,13 +1,12 @@
 import {ChangeDetectionStrategy, Component, inject, signal} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {ButtonComponent} from "@terralink-demo/ui";
-import {PHONE_MASK} from "../../domain";
-import {FormControl, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
-import {POLYMORPHEUS_CONTEXT} from "@tinkoff/ng-polymorpheus";
-import {TuiDialogContext, TuiLoaderModule} from "@taiga-ui/core";
-import {SupabaseService} from "../../services/supabase.service";
-import {finalize, takeUntil} from "rxjs";
-import {TuiDestroyService} from "@taiga-ui/cdk";
+import {ButtonComponent} from '@terralink-demo/ui';
+import {FormControl, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import {POLYMORPHEUS_CONTEXT} from '@tinkoff/ng-polymorpheus';
+import {TuiDialogContext, TuiLoaderModule} from '@taiga-ui/core';
+import {SupabaseService} from '../../services/supabase.service';
+import {finalize, takeUntil} from 'rxjs';
+import {TuiDestroyService} from '@taiga-ui/cdk';
 
 @Component({
     selector: 'presentation-send',
@@ -26,8 +25,8 @@ export class PresentationSendComponent {
     readonly viewType = signal<'form' | 'banner'>('form');
     readonly sessionEmail = inject(SupabaseService).session?.user.email ?? '';
     readonly control = new FormControl<string>(this.sessionEmail, {
-        validators: [Validators.required, Validators.email]
-    })
+        validators: [Validators.required, Validators.email],
+    });
 
     checkControlError(): boolean {
         return !!this.control.errors && this.control.touched;
@@ -46,9 +45,15 @@ export class PresentationSendComponent {
         }
 
         this.showLoader.set(true);
-        this.supabaseService.requestPresentation(+this.context.data + 1, this.control.value!).pipe(finalize(() => {
-            this.showLoader.set(false);
-            this.viewType.set('banner');
-        }), takeUntil(this.destroy$)).subscribe();
+        this.supabaseService
+            .requestPresentation(+this.context.data + 1, this.control.value!)
+            .pipe(
+                finalize(() => {
+                    this.showLoader.set(false);
+                    this.viewType.set('banner');
+                }),
+                takeUntil(this.destroy$),
+            )
+            .subscribe();
     }
 }

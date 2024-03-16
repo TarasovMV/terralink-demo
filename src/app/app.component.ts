@@ -1,20 +1,38 @@
-import {TuiRootModule, TuiDialogModule, TuiLoaderModule, TuiAlertModule, TuiAlertService} from '@taiga-ui/core';
+import {
+    TuiRootModule,
+    TuiDialogModule,
+    TuiLoaderModule,
+    TuiAlertModule,
+    TuiAlertService,
+    TuiDialogService,
+} from '@taiga-ui/core';
 import {Component, HostListener, inject, signal} from '@angular/core';
 import {RouterModule} from '@angular/router';
 import {LoaderService} from './services/loader.service';
+import {PolymorpheusComponent} from '@tinkoff/ng-polymorpheus';
+import {PwaInstallComponent} from './dialogs/pwa-install/pwa-install.component';
+import {TuiDestroyService} from '@taiga-ui/cdk';
 
 @Component({
     standalone: true,
     imports: [RouterModule, TuiRootModule, TuiDialogModule, TuiAlertModule, TuiLoaderModule],
+    providers: [TuiDestroyService],
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrl: './app.component.less',
 })
 export class AppComponent {
+    private readonly dialog = inject(TuiDialogService);
+    private readonly destroy$ = inject(TuiDialogService);
+
     readonly showLoader = inject(LoaderService).showLoader;
-    readonly showPwaInstall = signal(false);
     readonly alertService = inject(TuiAlertService);
+
     promptEvent: any;
+
+    get isRunningStandalone(): boolean {
+        return window.matchMedia('(display-mode: standalone)').matches;
+    }
 
     constructor() {
         // TODO: refactor service
@@ -32,22 +50,19 @@ export class AppComponent {
         e.preventDefault();
         this.promptEvent = e;
 
-        if (e) {
-            this.alertService.open('pwa ready').subscribe();
+        if (e && !this.isRunningStandalone) {
+            this.openPwaInstall();
         }
     }
 
-    // installPWA() {
-    //     this.promptEvent.prompt();
-    // }
-    //
-    // shouldInstall(): boolean {
-    //     const;
-    //
-    //     return !this.isRunningStandalone() && this.promptEvent;
-    // }
-    //
-    // isRunningStandalone(): boolean {
-    //     return window.matchMedia('(display-mode: standalone)').matches;
-    // }
+    private openPwaInstall(): void {
+        console.log('install');
+        this.dialog
+            .open<boolean>(new PolymorpheusComponent(PwaInstallComponent), {
+                size: 'page',
+                dismissible: false,
+                closeable: false,
+            })
+            .subscribe(res => res && this.promptEvent.prompt());
+    }
 }
