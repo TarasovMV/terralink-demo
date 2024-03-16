@@ -28,7 +28,7 @@ export class MapPageComponent implements AfterViewInit {
     readonly svgHeight = signal<number>(0);
 
     // TODO: add index to path
-    readonly mapPath = `assets/map/map.svg`;
+    readonly mapPath = `assets/maps/map.svg`;
 
     private get containerEl(): Element {
         return document.getElementsByClassName('container')[0];
