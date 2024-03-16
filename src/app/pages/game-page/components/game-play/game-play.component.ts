@@ -29,9 +29,6 @@ export class GamePlayComponent {
     }
 
     private get audioSrc(): string {
-        if (this.count === this.progress) {
-            return `assets/sounds/complete.mp3`;
-        }
         return `assets/sounds/${this.progress}.mp3`;
     }
 
