@@ -18,7 +18,7 @@ export class ScannerComponent implements AfterViewInit, OnDestroy {
     scanner!: Html5Qrcode;
 
     ngAfterViewInit(): void {
-        const aspectRatio = window.innerWidth / window.innerHeight;
+        const aspectRatio = window.innerHeight / window.innerWidth;
         this.scanner = new Html5Qrcode('reader');
 
         this.scanner.start(
