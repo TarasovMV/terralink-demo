@@ -3,13 +3,13 @@ import {CommonModule} from '@angular/common';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Pages} from '@terralink-demo/models';
 import {ButtonComponent} from '@terralink-demo/ui';
-import {TuiAlertService, TuiDialogService} from "@taiga-ui/core";
-import {PolymorpheusComponent} from "@tinkoff/ng-polymorpheus";
-import {catchError, finalize, of, takeUntil} from "rxjs";
-import {PresentationSendComponent} from "../../dialogs/presentation-send/presentation-send.component";
-import {TuiDestroyService} from "@taiga-ui/cdk";
-import {SupabaseService} from "../../services/supabase.service";
-import {LoaderService} from "../../services/loader.service";
+import {TuiAlertService, TuiDialogService} from '@taiga-ui/core';
+import {PolymorpheusComponent} from '@tinkoff/ng-polymorpheus';
+import {catchError, finalize, of, takeUntil} from 'rxjs';
+import {PresentationSendComponent} from '../../dialogs/presentation-send/presentation-send.component';
+import {TuiDestroyService} from '@taiga-ui/cdk';
+import {SupabaseService} from '../../services/supabase.service';
+import {LoaderService} from '../../services/loader.service';
 
 @Component({
     selector: 'presentation-page',
@@ -29,26 +29,33 @@ export class PresentationPageComponent implements OnInit {
     private readonly dialog = inject(TuiDialogService);
     private readonly destroy$ = inject(TuiDestroyService);
 
-    private readonly index = this.route.snapshot.queryParamMap.get('id') || 0;
+    private readonly id = +(this.route.snapshot.paramMap.get('id') || 1);
 
     readonly buttonType = signal<'primary' | 'disabled'>('primary');
 
     ngOnInit(): void {
         this.showLoader.set(true);
 
-        this.supabaseService.checkPresentation(+this.index + 1)
+        this.supabaseService
+            .checkPresentation(this.id)
             .pipe(
                 catchError(() => of(false)),
                 finalize(() => this.showLoader.set(false)),
-                takeUntil(this.destroy$)
+                takeUntil(this.destroy$),
             )
-            .subscribe((res) => {
+            .subscribe(res => {
                 this.buttonType.set(res ? 'disabled' : 'primary');
-            })
+            });
     }
 
     back(): void {
-        this.router.navigate([Pages.Game], {queryParams: {id: this.index}});
+        if (this.route.snapshot.data['pageType'] === Pages.ProductPresentation) {
+            this.router.navigate([Pages.Knowledge], {queryParams: {id: this.id}});
+
+            return;
+        }
+
+        this.router.navigate([Pages.Game], {queryParams: {id: this.id}});
     }
 
     openSend(): void {
@@ -63,10 +70,10 @@ export class PresentationPageComponent implements OnInit {
                 size: 'page',
                 dismissible: false,
                 closeable: false,
-                data: +this.index
+                data: this.id,
             })
             .pipe(takeUntil(this.destroy$))
-            .subscribe((res) => {
+            .subscribe(res => {
                 res && this.buttonType.set('disabled');
             });
     }

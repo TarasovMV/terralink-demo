@@ -1,0 +1,32 @@
+:host {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    padding: 10vh 8vh 0;
+    min-height: var(--max-height);
+    background-image: url("../../../assets/background.png");
+    background-size: cover;
+    box-sizing: border-box;
+}
+
+.label {
+    font-size: 1.25rem;
+    font-weight: 800;
+}
+
+.music-style {
+    padding: 1rem 2rem;
+    border-radius: 10rem;
+    color: var(--color-black);
+    font-size: 1.5rem;
+    font-weight: 900;
+    background: var(--color-white);
+}
+
+qrcode {
+    ::ng-deep {
+        img {
+            width: 100%;
+        }
+    }
+}

@@ -2,13 +2,16 @@
 @import 'checkbox';
 
 body {
+    --footer-height: 70px;
     --max-height: calc(var(--vh, 1vh) * 100);
+    --max-height-with-footer: calc(var(--vh, 1vh) * 100 - 70px);
     --side-padding: 2rem;
 
     --color-primary: #FC6238;
     --color-contrast: #212631;
     --color-white: #FFF;
     --color-black: #000;
+    --color-gray: #978B85;
 
     --tui-elevation-01: transparent;
 
@@ -20,6 +23,12 @@ body {
 
 .space {
     flex-grow: 1;
+}
+
+.footer-space {
+    height: var(--footer-height);
+    min-height: var(--footer-height);
+    max-height: var(--footer-height);
 }
 
 @font-face {

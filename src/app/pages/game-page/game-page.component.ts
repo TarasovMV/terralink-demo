@@ -99,7 +99,7 @@ export class GamePageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     goToPresentation(): void {
-        this.router.navigate([Pages.Presentation], {queryParams: {id: this.cardIndex()}});
+        this.router.navigate([Pages.Presentation, this.cards()[this.cardIndex()].id]);
     }
 
     tempQuit(): void {

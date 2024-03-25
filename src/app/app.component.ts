@@ -12,10 +12,11 @@ import {LoaderService} from './services/loader.service';
 import {PolymorpheusComponent} from '@tinkoff/ng-polymorpheus';
 import {PwaInstallComponent} from './dialogs/pwa-install/pwa-install.component';
 import {TuiDestroyService} from '@taiga-ui/cdk';
+import {QRCodeModule} from 'angularx-qrcode';
 
 @Component({
     standalone: true,
-    imports: [RouterModule, TuiRootModule, TuiDialogModule, TuiAlertModule, TuiLoaderModule],
+    imports: [RouterModule, TuiRootModule, TuiDialogModule, TuiAlertModule, TuiLoaderModule, QRCodeModule],
     providers: [TuiDestroyService],
     selector: 'app-root',
     templateUrl: './app.component.html',
