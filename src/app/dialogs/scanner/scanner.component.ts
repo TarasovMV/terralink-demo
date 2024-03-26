@@ -18,12 +18,12 @@ export class ScannerComponent implements AfterViewInit, OnDestroy {
     scanner!: Html5Qrcode;
 
     ngAfterViewInit(): void {
-        const aspectRatio = window.innerHeight / window.innerWidth;
+        // const aspectRatio = window.innerHeight / window.innerWidth;
         this.scanner = new Html5Qrcode('reader');
 
         this.scanner.start(
             {facingMode: 'environment'},
-            {fps: 10, qrbox: 250, aspectRatio},
+            {fps: 10, qrbox: 250}, // TODO: aspect ratio
             res => this.handleScan(res),
             err => true,
         );
