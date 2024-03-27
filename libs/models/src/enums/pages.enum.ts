@@ -10,4 +10,8 @@ export enum Pages {
     Rules = 'rules',
     Knowledge = 'knowledge',
     Profile = 'profile',
+    Organizator = 'organizator',
+    OrganizatorMark = 'organizator-mark',
+    RegisterSuccess = 'register-success',
+    OrgRegisterSuccess = 'org-register-success',
 }

@@ -31,6 +31,47 @@ body {
     max-height: var(--footer-height);
 }
 
+[tuiWrapper]:after {
+    border-color: var(--color-white) !important;
+    border-width: 2px !important;
+}
+
+[tuiWrapper][data-appearance='textfield'] {
+    background: transparent;
+    color: var(--color-white);
+}
+
+[tuiWrapper][data-appearance='icon'][data-appearance='icon'] {
+    opacity: 1 !important;
+
+    &:after {
+        border: none;
+    }
+}
+
+[tuiWrapper][data-appearance='primary'] {
+    background: transparent;
+}
+
+.t-placeholder {
+    color: var(--color-gray)!important;
+    font-family: 'TT Firs Neue', 'sans-serif' !important;
+    font-size: 20px!important;
+    font-weight: 500!important;
+}
+
+.t-value {
+    font-family: 'TT Firs Neue', 'sans-serif' !important;
+    font-size: 20px!important;
+    font-weight: 500!important;
+}
+
+.t-content {
+    font-family: 'TT Firs Neue', 'sans-serif' !important;
+    font-weight: 600!important;
+    font-size: 1.5rem !important;
+}
+
 @font-face {
     font-family: 'TT Firs Neue';
     src: url('./assets/fonts/TTFirsNeue-Light.eot');

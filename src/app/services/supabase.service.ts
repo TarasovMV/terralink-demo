@@ -2,8 +2,10 @@ import {Injectable} from '@angular/core';
 import {AuthSession, createClient, SupabaseClient} from '@supabase/supabase-js';
 import {environment} from '../../environment';
 import {catchError, delay, forkJoin, from, map, Observable, of, switchMap, tap, throwError} from 'rxjs';
-import {CardInfo, SupabaseErrors, UserMeta} from '@terralink-demo/models';
+import {CardInfo, CardMeta, SupabaseErrors, UserMeta} from '@terralink-demo/models';
 import {clearPhoneNumber} from '../utils';
+import {CARDS} from '../domain/cards.const';
+import {USER_MOCK} from '../domain';
 
 const SERVICE_PASS = '7>1C;_Fgy$J^6?£N-Jw)c';
 
@@ -24,6 +26,14 @@ export class SupabaseService {
         // this.signOut();
         // this.getAllProfiles().subscribe(x => console.log(x));
         // this.updateProfile();
+    }
+
+    getUserById(id: number): Observable<UserMeta> {
+        return of({...USER_MOCK} as UserMeta).pipe(delay(500));
+    }
+
+    getStands(): Observable<CardMeta[]> {
+        return of([...CARDS]);
     }
 
     requestPresentation(id: number, email: string): Observable<unknown> {

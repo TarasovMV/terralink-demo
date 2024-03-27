@@ -1,0 +1,42 @@
+:host {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    padding: 8vh var(--side-padding) 4vh;
+    min-height: var(--max-height);
+    background-image: url("../../../assets/background.png");
+    background-size: cover;
+    box-sizing: border-box;
+}
+
+.text {
+    &-title {
+        text-align: center;
+        line-height: 42px;
+        font-size: 2rem;
+        font-weight: 800;
+    }
+
+    &-body {
+        font-size: 1.25rem;
+        font-weight: 800;
+        line-height: 26px;
+        text-align: center;
+    }
+
+    &-label {
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 18px;
+    }
+
+    &-code {
+        font-size: 4rem;
+        font-weight: 800;
+        line-height: 82px;
+    }
+}
+
+ui-button {
+    width: 100%;
+}

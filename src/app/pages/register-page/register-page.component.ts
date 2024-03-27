@@ -11,11 +11,12 @@ import {clearPhoneNumber} from '../../utils';
 import {LoaderService} from '../../services/loader.service';
 import {TuiAlertService} from '@taiga-ui/core';
 import {finalize} from 'rxjs';
+import {TuiRadioLabeledModule} from '@taiga-ui/kit';
 
 @Component({
     selector: 'register-page',
     standalone: true,
-    imports: [CommonModule, MaskitoDirective, ReactiveFormsModule, ButtonComponent],
+    imports: [CommonModule, MaskitoDirective, ReactiveFormsModule, ButtonComponent, TuiRadioLabeledModule],
     templateUrl: './register-page.component.html',
     styleUrl: './register-page.component.less',
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -30,12 +31,13 @@ export class RegisterPageComponent {
     readonly form = new FormGroup({
         fio: new FormControl<string>('', {validators: [Validators.required], nonNullable: true}),
         phone: new FormControl<string>('', {validators: [phoneValidator('RU')], nonNullable: true}),
-        email: new FormControl<string>(' ', {
+        email: new FormControl<string>('', {
             validators: [Validators.required, Validators.email],
             nonNullable: true,
         }),
         organization: new FormControl<string>(''),
         position: new FormControl<string>(''),
+        musicGenre: new FormControl<string | null>(null),
         agreement: new FormControl<boolean>(false, {validators: [Validators.requiredTrue], nonNullable: true}),
     });
 
@@ -72,7 +74,7 @@ export class RegisterPageComponent {
                             message = NETWORK_ERROR;
                             break;
                         case SupabaseErrors.UserAlreadyRegistered:
-                            message = 'Пользователь с такой почтой или телефоном уже зарегистрирован';
+                            message = 'Такой пользователь уже зарегистрирован';
                             break;
                     }
 

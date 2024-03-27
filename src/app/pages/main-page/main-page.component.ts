@@ -8,7 +8,6 @@ import {FooterComponent} from '../../components/footer/footer.component';
     standalone: true,
     imports: [CommonModule, FooterComponent, RouterOutlet],
     templateUrl: './main-page.component.html',
-    styleUrl: './main-page.component.less',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MainPageComponent {}
