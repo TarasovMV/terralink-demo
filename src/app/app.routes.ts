@@ -30,11 +30,6 @@ export const appRoutes: Route[] = [
         canActivate: [alreadyAuthGuard],
     },
     {
-        path: Pages.Auth,
-        loadComponent: () => import('../app/pages/auth-page/auth-page.component').then(c => c.AuthPageComponent),
-        canActivate: [alreadyAuthGuard],
-    },
-    {
         path: `${Pages.Presentation}/:id`,
         data: {
             pageType: Pages.Presentation,

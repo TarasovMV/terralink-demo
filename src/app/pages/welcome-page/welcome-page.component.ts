@@ -8,11 +8,11 @@ import {PolymorpheusComponent} from '@tinkoff/ng-polymorpheus';
 import {ScannerComponent} from '../../dialogs/scanner/scanner.component';
 import {finalize, takeUntil} from 'rxjs';
 import {TuiDestroyService} from '@taiga-ui/cdk';
-import {ScannerConfirmComponent} from '../../dialogs/scanner-confirm/scanner-confirm.component';
 import {SupabaseService} from '../../services/supabase.service';
 import {LoaderService} from '../../services/loader.service';
 import {NETWORK_ERROR} from '../../domain';
 import {SvgIconComponent} from 'angular-svg-icon';
+import {trimUserQrCode} from "../../utils";
 
 @Component({
     selector: 'welcome-page',
@@ -38,37 +38,31 @@ export class WelcomePageComponent {
                 closeable: false,
             })
             .pipe(takeUntil(this.destroy$))
-            .subscribe(res => res && this.openConfirm(res));
+            .subscribe(res => res && this.signQrCode(res));
     }
 
     goToRegister(): void {
         this.router.navigate([Pages.Register]);
     }
 
-    goToAuth(): void {
-        this.router.navigate([Pages.Auth]);
-    }
-
     private goToRules(): void {
         this.router.navigate([Pages.Rules]);
     }
 
-    private openConfirm(email: string): void {
-        this.dialog
-            .open<boolean>(new PolymorpheusComponent(ScannerConfirmComponent), {
-                size: 'page',
-                data: email,
-                dismissible: false,
-                closeable: false,
-            })
-            .pipe(takeUntil(this.destroy$))
-            .subscribe(res => res && this.signQrCode(email));
-    }
+    private signQrCode(rawQr: string): void {
+        const qrCode = trimUserQrCode(rawQr);
 
-    private signQrCode(email: string): void {
+        if (!qrCode) {
+            this.alertService.open('Использован неккоректный QR код', {
+                status: 'error',
+            }).pipe(takeUntil(this.destroy$)).subscribe();
+
+            return;
+        }
+
         this.showLoader.set(true);
         this.supabaseService
-            .signQr(email)
+            .signInQr(qrCode)
             .pipe(finalize(() => this.showLoader.set(false)))
             .subscribe({
                 next: () => this.goToRules(),
@@ -79,7 +73,7 @@ export class WelcomePageComponent {
                         case SupabaseErrors.NetworkError:
                             message = NETWORK_ERROR;
                             break;
-                        case SupabaseErrors.MetaError:
+                        case SupabaseErrors.QrNotFound:
                             message = 'Не смогли найти пользователя по данному QR коду, попробуйте другой';
                             break;
                     }

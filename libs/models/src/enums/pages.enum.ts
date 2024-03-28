@@ -1,7 +1,6 @@
 export enum Pages {
     Main = '',
     Welcome = 'welcome',
-    Auth = 'auth',
     Game = 'game',
     Map = 'map',
     Presentation = 'presentation',

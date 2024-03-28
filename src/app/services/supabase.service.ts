@@ -2,8 +2,8 @@ import {Injectable} from '@angular/core';
 import {AuthSession, createClient, SupabaseClient} from '@supabase/supabase-js';
 import {environment} from '../../environment';
 import {catchError, delay, forkJoin, from, map, Observable, of, switchMap, tap, throwError} from 'rxjs';
-import {CardInfo, CardMeta, SupabaseErrors, UserMeta} from '@terralink-demo/models';
-import {clearPhoneNumber} from '../utils';
+import {CardInfo, CardMeta, PresentationMeta, SupabaseErrors, UserMeta} from '@terralink-demo/models';
+import {clearPhoneNumber, getEmail, getQrCode} from '../utils';
 import {CARDS} from '../domain/cards.const';
 import {USER_MOCK} from '../domain';
 
@@ -14,6 +14,8 @@ const SERVICE_PASS = '7>1C;_Fgy$J^6?£N-Jw)c';
 })
 export class SupabaseService {
     private readonly supabase: SupabaseClient;
+    private readonly cache = new Map<string, any>();
+
     session: AuthSession | null = null;
 
     constructor() {
@@ -28,12 +30,66 @@ export class SupabaseService {
         // this.updateProfile();
     }
 
+    signOut() {
+        return from(this.supabase.auth.signOut());
+    }
+
+    signUpForm(meta: UserMeta, signIn: boolean = true): Observable<number> {
+        let qrCode = 0;
+        let userEmail = '';
+
+        return this.getUsedQrs().pipe(
+            map((qrs) => getQrCode(qrs)),
+            tap((qr) => qrCode = qr),
+            map((qr) => getEmail(qr)),
+            tap((email) => userEmail = email),
+            switchMap((email) => this.signUp(email)),
+            map(user_id => ({...meta, user_id, phone_number: clearPhoneNumber(meta.phone_number)})),
+            switchMap(res => this.postUserMeta(res)),
+            switchMap(res => signIn ? this.signIn(userEmail) : of(null)),
+            map(() => qrCode)
+        );
+    }
+
+    signInQr(qrCode: number) {
+        const email = getEmail(qrCode);
+
+        return this.checkUserExist(qrCode).pipe(
+            switchMap((exist) => exist
+                ? this.signIn(email)
+                : this.signUpQr(qrCode, email)
+            )
+        );
+    }
+
     getUserById(id: number): Observable<UserMeta> {
         return of({...USER_MOCK} as UserMeta).pipe(delay(500));
     }
 
     getStands(): Observable<CardMeta[]> {
-        return of([...CARDS]);
+        const key = `stands`;
+        const cache = this.cache.get(key);
+
+        if (cache) {
+            return of(cache);
+        }
+
+        return of([...CARDS]).pipe(tap((res) => this.cache.set(key, res)));
+    }
+
+    getPresentation(id: number): Observable<PresentationMeta> {
+        const key = `presentation_${id}`;
+        const cache = this.cache.get(key);
+
+        if (cache) {
+            return of(cache);
+        }
+
+        return this.fromSupabase(this.supabase.from('presentation').select('*').eq('id', id).single())
+            .pipe(
+                switchMap(({data}) => !data ? throwError(() => SupabaseErrors.GetPresentationError) : of(data)),
+                tap((res) => this.cache.set(key, res)),
+            );
     }
 
     requestPresentation(id: number, email: string): Observable<unknown> {
@@ -65,39 +121,42 @@ export class SupabaseService {
         );
     }
 
-    signQr(email: string) {
-        return this.checkProfileByField('email', email).pipe(
-            switchMap(alreadyExist => (alreadyExist ? this.signIn(email) : this.fullSignUp(email))),
-        );
+    private getUsedQrs(): Observable<number[]> {
+        return this.fromSupabase(this.supabase.from('user_meta').select('qr_code'))
+            .pipe(switchMap(res => {
+                if (!!res.error) {
+                    return throwError(() => SupabaseErrors.GetQrsError);
+                }
+
+                return of(res.data?.map(({qr_code}) => qr_code) ?? []);
+            }))
     }
 
-    signInWithPhone(phone: string) {
-        return this.checkProfileByField('phone_number', phone).pipe(
-            switchMap(email => (email ? of(email) : throwError(() => SupabaseErrors.UserNotFound))),
-            switchMap(email => this.signIn(email)),
-        );
-    }
+    private signUpQr(qrCode: number, email: string) {
+        let meta = {} as UserMeta;
 
-    fullSignUp(email: string, meta?: UserMeta) {
-        return (meta ? of(meta) : this.getServiceMeta(email)).pipe(
-            switchMap(res => (!res ? throwError(() => SupabaseErrors.MetaError) : of(res))),
-            switchMap(res =>
-                forkJoin([
-                    this.checkProfileByField('email', email),
-                    this.checkProfileByField('phone_number', clearPhoneNumber(res.phone_number)),
-                ]).pipe(
-                    switchMap(([checkEmail, checkPhone]) =>
-                        !checkEmail && !checkPhone ? of(res) : throwError(() => SupabaseErrors.UserAlreadyRegistered),
-                    ),
-                ),
-            ),
-            switchMap(res =>
-                this.signUp(email).pipe(
-                    map(user_id => ({...res, user_id, phone_number: clearPhoneNumber(res.phone_number)})),
-                ),
-            ),
-            switchMap(res => this.signIn(email).pipe(map(() => res))),
+        return this.getServiceMeta(qrCode).pipe(
+            tap((serviceMeta) => {
+                delete serviceMeta.id
+                meta = serviceMeta;
+            }),
+            switchMap(() => this.signUp(email)),
+            map(user_id => ({...meta, user_id, phone_number: clearPhoneNumber(meta.phone_number)})),
             switchMap(res => this.postUserMeta(res)),
+            switchMap(res => this.signIn(email)),
+            map(() => qrCode)
+        )
+    }
+
+    private signIn(email: string) {
+        return this.fromSupabase(this.supabase.auth.signInWithPassword({email, password: SERVICE_PASS})).pipe(
+            switchMap(res => {
+                if (!res.data.user?.id) {
+                    return throwError(() => 'SIGNIN_ERROR');
+                }
+
+                return of(res);
+            }),
         );
     }
 
@@ -123,45 +182,24 @@ export class SupabaseService {
         return this.fromSupabase(this.supabase.from('user_meta').insert(meta));
     }
 
-    private getServiceMeta(email: string) {
-        return this.fromSupabase(this.supabase.from('service_meta').select('*').eq('email', email).single()).pipe(
-            map(({data}) => {
+    private getServiceMeta(qrCode: number): Observable<UserMeta> {
+        return this.fromSupabase(this.supabase.from('service_meta').select('*').eq('qr_code', qrCode).single()).pipe(
+            switchMap(({data}) => {
                 if (!data) {
-                    return null;
+                    return throwError(() => SupabaseErrors.QrNotFound);
                 }
 
                 delete data.id;
 
-                return data;
-            }),
-            catchError(() => of(null)),
-        );
-    }
-
-    private signIn(email: string) {
-        return this.fromSupabase(this.supabase.auth.signInWithPassword({email, password: SERVICE_PASS})).pipe(
-            switchMap(res => {
-                if (!res.data.user?.id) {
-                    return throwError(() => 'SIGNIN_ERROR');
-                }
-
-                return of(res);
+                return of(data);
             }),
         );
     }
 
-    signOut() {
-        return from(this.supabase.auth.signOut());
-    }
-
-    private checkProfileByField(field: 'email' | 'phone_number', value: string): Observable<string | null> {
-        return this.fromSupabase(this.supabase.from('user_meta').select(`email`).eq(field, value).single()).pipe(
-            map(({data}) => data?.email),
+    private checkUserExist(qrCode: number): Observable<boolean> {
+        return this.fromSupabase(this.supabase.from('user_meta').select(`user_id`).eq('qr_code', qrCode).single()).pipe(
+            map(({data}) => !!data?.user_id),
         );
-    }
-
-    private getAllProfiles() {
-        return from(this.supabase.from('user_meta').select(`*`).eq('phone_number', '+79255999987'));
     }
 
     private fromSupabase<T extends PromiseLike<any>>(request: T) {
@@ -174,5 +212,9 @@ export class SupabaseService {
                 return of(res);
             }),
         );
+    }
+
+    private getAllProfiles() {
+        return from(this.supabase.from('user_meta').select(`*`));
     }
 }

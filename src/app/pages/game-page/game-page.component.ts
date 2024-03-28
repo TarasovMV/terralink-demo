@@ -66,6 +66,10 @@ export class GamePageComponent implements OnInit, OnDestroy, AfterViewInit {
         return document.querySelector('swiper-container');
     }
 
+    private get currentStand(): CardMeta {
+        return this.cards()[this.cardIndex()];
+    }
+
     ngOnInit(): void {
         this.showLoader.set(true);
 
@@ -95,15 +99,11 @@ export class GamePageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     goToMap(): void {
-        this.router.navigate([Pages.Map], {queryParams: {id: this.cardIndex()}});
+        this.router.navigate([Pages.Map], {queryParams: {id: this.currentStand}});
     }
 
     goToPresentation(): void {
-        this.router.navigate([Pages.Presentation, this.cards()[this.cardIndex()].id]);
-    }
-
-    tempQuit(): void {
-        this.supabaseService.signOut().subscribe(() => this.router.navigate([Pages.Welcome]));
+        this.router.navigate([Pages.Presentation, this.currentStand.presentation_id], {queryParams: {stand_id: this.currentStand.id}});
     }
 
     private doneCard(strCardId: string): void {

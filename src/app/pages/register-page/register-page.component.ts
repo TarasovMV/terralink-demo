@@ -62,7 +62,7 @@ export class RegisterPageComponent {
         this.showLoader.set(true);
 
         this.supabaseService
-            .fullSignUp(meta.email, meta)
+            .signUpForm(meta)
             .pipe(finalize(() => this.showLoader.set(false)))
             .subscribe({
                 next: () => this.router.navigate([Pages.Rules]),
@@ -90,6 +90,7 @@ export class RegisterPageComponent {
             phone_number: clearPhoneNumber(value.phone!),
             organization: value.organization,
             position: value.position,
+            music_genre: value.musicGenre,
         };
     }
 }
