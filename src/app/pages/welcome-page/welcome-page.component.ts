@@ -12,7 +12,7 @@ import {SupabaseService} from '../../services/supabase.service';
 import {LoaderService} from '../../services/loader.service';
 import {NETWORK_ERROR} from '../../domain';
 import {SvgIconComponent} from 'angular-svg-icon';
-import {trimUserQrCode} from "../../utils";
+import {trimUserQrCode} from '../../utils';
 
 @Component({
     selector: 'welcome-page',
@@ -49,13 +49,20 @@ export class WelcomePageComponent {
         this.router.navigate([Pages.Rules]);
     }
 
+    private goToGame(): void {
+        this.router.navigate([Pages.Game]);
+    }
+
     private signQrCode(rawQr: string): void {
         const qrCode = trimUserQrCode(rawQr);
 
         if (!qrCode) {
-            this.alertService.open('Использован неккоректный QR код', {
-                status: 'error',
-            }).pipe(takeUntil(this.destroy$)).subscribe();
+            this.alertService
+                .open('Использован неккоректный QR код', {
+                    status: 'error',
+                })
+                .pipe(takeUntil(this.destroy$))
+                .subscribe();
 
             return;
         }
@@ -65,7 +72,7 @@ export class WelcomePageComponent {
             .signInQr(qrCode)
             .pipe(finalize(() => this.showLoader.set(false)))
             .subscribe({
-                next: () => this.goToRules(),
+                next: userExist => (userExist ? this.goToGame() : this.goToRules()),
                 error: error => {
                     let message = 'Неизвестная ошибка, попробуйте позже';
 

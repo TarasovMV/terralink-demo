@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {ButtonComponent} from '@terralink-demo/ui';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Pages} from '@terralink-demo/models';
 
 @Component({
@@ -14,6 +14,7 @@ import {Pages} from '@terralink-demo/models';
 })
 export class UserRegisterSuccessPageComponent {
     private readonly router = inject(Router);
+    readonly qrCode = inject(ActivatedRoute).snapshot.queryParamMap.get('qr_code');
 
     goToRules(): void {
         this.router.navigate([Pages.Rules]);

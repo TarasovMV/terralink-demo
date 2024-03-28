@@ -5,7 +5,7 @@ import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/
 import {TuiAlertService, TuiDataListModule, TuiTextfieldControllerModule} from '@taiga-ui/core';
 import {TuiDataListWrapperModule, TuiSelectModule, TuiTextareaModule} from '@taiga-ui/kit';
 import {ActivatedRoute, Router} from '@angular/router';
-import {CardMeta, Pages, UserMeta} from '@terralink-demo/models';
+import {StandMeta, Pages, UserMeta} from '@terralink-demo/models';
 import {finalize, forkJoin, takeUntil} from 'rxjs';
 import {TuiDestroyService} from '@taiga-ui/cdk';
 import {SupabaseService} from '../../services/supabase.service';
@@ -42,7 +42,7 @@ export class OrganizatorMarkPageComponent implements OnInit {
         stand: new FormControl<number | undefined>(undefined, [Validators.required]),
     });
 
-    readonly stands: WritableSignal<CardMeta[]> = signal([]);
+    readonly stands: WritableSignal<StandMeta[]> = signal([]);
     readonly user: WritableSignal<UserMeta | null> = signal(null);
 
     ngOnInit(): void {

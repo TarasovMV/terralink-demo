@@ -1,6 +1,12 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, OnInit, signal} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {QRCodeModule} from 'angularx-qrcode';
+import {UserMeta} from '@terralink-demo/models';
+import {SupabaseService} from '../../services/supabase.service';
+import {TuiDestroyService} from '@taiga-ui/cdk';
+import {finalize, takeUntil} from 'rxjs';
+import {LoaderService} from '../../services/loader.service';
+import {TuiAlertService} from '@taiga-ui/core';
 
 @Component({
     selector: 'profile-page',
@@ -10,4 +16,32 @@ import {QRCodeModule} from 'angularx-qrcode';
     styleUrl: './profile-page.component.less',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProfilePageComponent {}
+export class ProfilePageComponent implements OnInit {
+    private readonly supabaseService = inject(SupabaseService);
+    private readonly alertService = inject(TuiAlertService);
+    private readonly destroy$ = inject(TuiDestroyService);
+    private readonly showLoader = inject(LoaderService).showLoader;
+
+    readonly user = signal<UserMeta | null>(null);
+
+    ngOnInit(): void {
+        this.showLoader.set(true);
+        this.supabaseService
+            .getCurrentUser()
+            .pipe(
+                finalize(() => this.showLoader.set(false)),
+                takeUntil(this.destroy$),
+            )
+            .subscribe({
+                next: user => this.user.set(user),
+                error: () => this.showGetUserError(),
+            });
+    }
+
+    private showGetUserError(): void {
+        this.alertService
+            .open('Непредвиденная ошибка при загрузке профиля', {status: 'error'})
+            .pipe(takeUntil(this.destroy$))
+            .subscribe();
+    }
+}

@@ -65,7 +65,7 @@ export class RegisterPageComponent {
             .signUpForm(meta)
             .pipe(finalize(() => this.showLoader.set(false)))
             .subscribe({
-                next: () => this.router.navigate([Pages.Rules]),
+                next: qr => this.router.navigate([Pages.RegisterSuccess], {queryParams: {qr_code: qr}}),
                 error: error => {
                     let message = 'Неизвестная ошибка при регистрации, попробуйте позже';
 

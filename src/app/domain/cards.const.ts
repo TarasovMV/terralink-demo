@@ -1,4 +1,4 @@
-import {CardMeta} from '@terralink-demo/models';
+import {StandMeta} from '@terralink-demo/models';
 
 export const CARDS = [
     {
@@ -37,4 +37,4 @@ export const CARDS = [
         body: 'Улучшите внутреннюю коммуникацию, ускорьте найм персонала и объедините ИТ-сервисы с мобильным корпоративным порталом ТерраЛинк Разработка!',
         presentation_id: 6,
     },
-] satisfies CardMeta[];
+] satisfies StandMeta[];

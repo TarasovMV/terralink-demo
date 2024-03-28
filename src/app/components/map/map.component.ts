@@ -26,7 +26,7 @@ export class MapComponent implements AfterViewInit {
     }
 
     ngAfterViewInit(): void {
-        this.initMap();
+        setTimeout(() => this.initMap(), 100);
     }
 
     private initMap(): void {

@@ -5,7 +5,7 @@ import {Pages, PresentationMeta} from '@terralink-demo/models';
 import {ButtonComponent} from '@terralink-demo/ui';
 import {TuiAlertService, TuiDialogService} from '@taiga-ui/core';
 import {PolymorpheusComponent} from '@tinkoff/ng-polymorpheus';
-import {catchError, finalize, forkJoin, Observable, of, takeUntil, tap} from 'rxjs';
+import {catchError, finalize, forkJoin, map, Observable, of, takeUntil, tap} from 'rxjs';
 import {PresentationSendComponent} from '../../dialogs/presentation-send/presentation-send.component';
 import {TuiDestroyService} from '@taiga-ui/cdk';
 import {SupabaseService} from '../../services/supabase.service';
@@ -14,6 +14,7 @@ import {LoaderService} from '../../services/loader.service';
 interface Presentation {
     title: string;
     body: string;
+    imgPath: string;
     paragraphs: {
         title: string;
         body: string;
@@ -46,15 +47,15 @@ export class PresentationPageComponent implements OnInit {
     ngOnInit(): void {
         this.showLoader.set(true);
 
-        forkJoin([
-            this.checkPresentation(),
-            this.getMeta()
-        ]).pipe(
-            finalize(() => this.showLoader.set(false)),
-            takeUntil(this.destroy$),
-        ).subscribe({
-            error: () => this.alertService.open('Произошла ошибка при загрузке презентации', {status: 'error'}).subscribe()
-        });
+        forkJoin([this.checkPresentation(), this.getMeta()])
+            .pipe(
+                finalize(() => this.showLoader.set(false)),
+                takeUntil(this.destroy$),
+            )
+            .subscribe({
+                error: () =>
+                    this.alertService.open('Произошла ошибка при загрузке презентации', {status: 'error'}).subscribe(),
+            });
     }
 
     back(): void {
@@ -77,36 +78,62 @@ export class PresentationPageComponent implements OnInit {
             return;
         }
 
-        this.dialog
-            .open<boolean>(new PolymorpheusComponent(PresentationSendComponent), {
-                size: 'page',
-                dismissible: false,
-                closeable: false,
-                data: this.id,
-            })
-            .pipe(takeUntil(this.destroy$))
-            .subscribe(res => {
-                res && this.buttonType.set('disabled');
+        this.showLoader.set(true);
+        this.supabaseService
+            .getCurrentUser()
+            .pipe(
+                map(user => user.email),
+                catchError(() => of('')),
+                finalize(() => this.showLoader.set(false)),
+                takeUntil(this.destroy$),
+            )
+            .subscribe(email => {
+                this.dialog
+                    .open<boolean>(new PolymorpheusComponent(PresentationSendComponent), {
+                        size: 'page',
+                        dismissible: false,
+                        closeable: false,
+                        data: {
+                            id: this.id,
+                            email,
+                        },
+                    })
+                    .pipe(takeUntil(this.destroy$))
+                    .subscribe(res => {
+                        res && this.buttonType.set('disabled');
+                    });
             });
     }
 
     private checkPresentation(): Observable<unknown> {
-        return this.supabaseService
-            .checkPresentation(this.id)
-            .pipe(
-                catchError(() => of(false)),
-                tap((res) => this.buttonType.set(res ? 'disabled' : 'primary')),
-            )
+        return this.supabaseService.checkPresentation(this.id).pipe(
+            catchError(() => of(false)),
+            tap(res => this.buttonType.set(res ? 'disabled' : 'primary')),
+        );
     }
 
     private getMeta(): Observable<unknown> {
-        return this.supabaseService.getPresentation(this.id)
-            .pipe(tap((res) => this.meta.set(this.metaMapper(res))));
+        return this.supabaseService.getPresentation(this.id).pipe(tap(res => this.meta.set(this.metaMapper(res))));
     }
 
-
-    // TODO: для парсинга пунктов
     private metaMapper(meta: PresentationMeta): Presentation {
-        return {} as Presentation;
+        const paragraphs = meta.body ? this.getParagraphs(meta.paragraphs) : [];
+
+        return {
+            title: meta.title,
+            body: meta.body,
+            imgPath: meta.image_path,
+            paragraphs,
+        };
+    }
+
+    private getParagraphs(str: string): Presentation['paragraphs'] {
+        const rawParagraphs = str.split('||');
+
+        return rawParagraphs.map(p => {
+            const [title, body] = p.split('//');
+
+            return {title, body};
+        });
     }
 }

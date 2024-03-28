@@ -17,13 +17,13 @@ import {TuiDestroyService} from '@taiga-ui/cdk';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PresentationSendComponent {
-    private readonly context = inject(POLYMORPHEUS_CONTEXT) as TuiDialogContext<boolean, number>;
+    private readonly context = inject(POLYMORPHEUS_CONTEXT) as TuiDialogContext<boolean, {id: number; email: string}>;
     private readonly supabaseService = inject(SupabaseService);
     private readonly destroy$ = inject(TuiDestroyService);
 
     readonly showLoader = signal(false);
     readonly viewType = signal<'form' | 'banner'>('form');
-    readonly sessionEmail = inject(SupabaseService).session?.user.email ?? '';
+    readonly sessionEmail = this.context.data.email ?? '';
     readonly control = new FormControl<string>(this.sessionEmail, {
         validators: [Validators.required, Validators.email],
     });
@@ -46,7 +46,7 @@ export class PresentationSendComponent {
 
         this.showLoader.set(true);
         this.supabaseService
-            .requestPresentation(+this.context.data + 1, this.control.value!)
+            .requestPresentation(+this.context.data.id, this.control.value!)
             .pipe(
                 finalize(() => {
                     this.showLoader.set(false);

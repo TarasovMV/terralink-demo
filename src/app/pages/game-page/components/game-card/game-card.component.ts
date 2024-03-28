@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
 import {CommonModule} from '@angular/common';
 import {ButtonComponent} from '@terralink-demo/ui';
 import {SvgIconComponent} from 'angular-svg-icon';
-import {CardMeta} from '@terralink-demo/models';
+import {StandMeta} from '@terralink-demo/models';
 
 @Component({
     selector: 'game-card',
@@ -13,7 +13,7 @@ import {CardMeta} from '@terralink-demo/models';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GameCardComponent {
-    @Input({required: true}) data!: CardMeta;
+    @Input({required: true}) data!: StandMeta;
     @Input() done: undefined | boolean = false;
 
     @Output() readonly openMap = new EventEmitter<void>();

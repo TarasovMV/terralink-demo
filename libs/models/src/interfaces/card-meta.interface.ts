@@ -1,4 +1,4 @@
-export interface CardMeta {
+export interface StandMeta {
     id: number;
     title: string;
     body: string;

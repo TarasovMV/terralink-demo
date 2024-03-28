@@ -7,4 +7,5 @@ export interface UserMeta {
     music_genre?: string | null;
     organization?: string | null;
     position?: string | null;
+    qr_code?: number | null;
 }

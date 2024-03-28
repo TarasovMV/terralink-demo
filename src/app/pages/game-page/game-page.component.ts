@@ -1,5 +1,4 @@
 import {
-    AfterViewInit,
     ChangeDetectionStrategy,
     Component,
     computed,
@@ -16,17 +15,16 @@ import {GamePagerComponent} from './components/game-pager/game-pager.component';
 import {ButtonComponent} from '@terralink-demo/ui';
 import {GamePlayComponent} from './components/game-play/game-play.component';
 import {ActivatedRoute, Router} from '@angular/router';
-import {CardMeta, Pages} from '@terralink-demo/models';
-import {SupabaseService} from '../../services/supabase.service';
+import {StandMeta, Pages} from '@terralink-demo/models';
 import {LoaderService} from '../../services/loader.service';
 import {GameService} from '../../services/game.service';
-import {finalize, takeUntil} from 'rxjs';
 import {CARDS} from '../../domain/cards.const';
 import {PolymorpheusComponent} from '@tinkoff/ng-polymorpheus';
 import {ScannerComponent} from '../../dialogs/scanner/scanner.component';
 import {TuiAlertService, TuiDialogService} from '@taiga-ui/core';
 import {TuiDestroyService} from '@taiga-ui/cdk';
 import {SvgIconComponent} from 'angular-svg-icon';
+import {finalize, takeUntil} from 'rxjs';
 
 @Component({
     selector: 'game-page',
@@ -46,18 +44,17 @@ import {SvgIconComponent} from 'angular-svg-icon';
     styleUrl: './game-page.component.less',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GamePageComponent implements OnInit, OnDestroy, AfterViewInit {
+export class GamePageComponent implements OnInit, OnDestroy {
     private readonly router = inject(Router);
     private readonly route = inject(ActivatedRoute);
     private readonly dialog = inject(TuiDialogService);
     private readonly alertService = inject(TuiAlertService);
     private readonly destroy$ = inject(TuiDestroyService);
-    private readonly supabaseService = inject(SupabaseService);
     private readonly gameService = inject(GameService);
     private readonly showLoader = inject(LoaderService).showLoader;
 
-    readonly cardIndex = signal<number>(+(this.route.snapshot.queryParamMap.get('id') || 0));
-    readonly cards = signal<CardMeta[]>([...CARDS]);
+    readonly cardIndex = signal<number>(0);
+    readonly cards = signal<StandMeta[]>([...CARDS]);
     readonly progress = computed<number>(() => {
         return this.cards().reduce((acc, next) => acc + (next.done ? 1 : 0), 0);
     });
@@ -66,7 +63,7 @@ export class GamePageComponent implements OnInit, OnDestroy, AfterViewInit {
         return document.querySelector('swiper-container');
     }
 
-    private get currentStand(): CardMeta {
+    private get currentStand(): StandMeta {
         return this.cards()[this.cardIndex()];
     }
 
@@ -76,16 +73,25 @@ export class GamePageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.gameService
             .getCards()
             .pipe(finalize(() => this.showLoader.set(false)))
-            .subscribe(res => this.cards.set(res));
+            .subscribe({
+                next: res => {
+                    this.cards.set(res);
+                    setTimeout(() => {
+                        const id = +(this.route.snapshot.queryParamMap.get('id') || 0);
+                        const idx = this.cards().findIndex(c => c.id === id);
+
+                        if (idx >= 0) {
+                            this.updateCardIndex(idx);
+                        }
+                        this.handleSwipe();
+                    });
+                },
+                error: () => this.showError('Ошибка при загрузке стендов'),
+            });
     }
 
     ngOnDestroy(): void {
         this.showLoader.set(false);
-    }
-
-    ngAfterViewInit(): void {
-        this.updateCardIndex();
-        this.handleSwipe();
     }
 
     scanQr(): void {
@@ -99,18 +105,20 @@ export class GamePageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     goToMap(): void {
-        this.router.navigate([Pages.Map], {queryParams: {id: this.currentStand}});
+        this.router.navigate([Pages.Map], {queryParams: {id: this.currentStand.id}});
     }
 
     goToPresentation(): void {
-        this.router.navigate([Pages.Presentation, this.currentStand.presentation_id], {queryParams: {stand_id: this.currentStand.id}});
+        this.router.navigate([Pages.Presentation, this.currentStand.presentation_id], {
+            queryParams: {stand_id: this.currentStand.id},
+        });
     }
 
     private doneCard(strCardId: string): void {
         const standPrefix = 'stand_';
 
         if (!strCardId.includes(standPrefix)) {
-            this.showCardError();
+            this.showError();
 
             return;
         }
@@ -119,7 +127,7 @@ export class GamePageComponent implements OnInit, OnDestroy, AfterViewInit {
         const cards = this.cards();
 
         if (cards.some(c => c.id === id && c.done)) {
-            this.showCardError('Данный QR-код уже был использован');
+            this.showError('Данный QR-код уже был использован');
 
             return;
         }
@@ -137,9 +145,9 @@ export class GamePageComponent implements OnInit, OnDestroy, AfterViewInit {
 
                 if (card) {
                     card.done = true;
-                    this.updateCardIndex(id - 1);
+                    this.updateCardIndex(this.cards().indexOf(card));
                 } else {
-                    this.showCardError();
+                    this.showError();
                 }
 
                 this.cards.set([...cards]);
@@ -148,7 +156,7 @@ export class GamePageComponent implements OnInit, OnDestroy, AfterViewInit {
             });
     }
 
-    private showCardError(msg = 'Распознан неверный QR-код. Попробуйте еще раз'): void {
+    private showError(msg = 'Распознан неверный QR-код. Попробуйте еще раз'): void {
         this.alertService.open(msg, {status: 'error'}).subscribe();
     }
 
