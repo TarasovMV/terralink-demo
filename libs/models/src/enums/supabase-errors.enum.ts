@@ -8,6 +8,8 @@ export enum SupabaseErrors {
     GetCurrentUserError = 'GET_CURRENT_USER_ERROR',
     GetQrsError = 'GET_QRS_ERROR',
     GetPresentationError = 'GET_PRESENTATION_ERROR',
+    GetProductError = 'GET_PRODUCT_ERROR',
+    GetProductGroupsError = 'GET_PRODUCT_GROUPS_ERROR',
 
     SetStandDoneError = 'SET_STAND_DONE_ERROR',
 }

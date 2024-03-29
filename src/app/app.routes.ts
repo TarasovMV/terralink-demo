@@ -37,9 +37,9 @@ export const appRoutes: Route[] = [
             import('../app/pages/register-page/register-page.component').then(c => c.RegisterPageComponent),
     },
     {
-        path: `${Pages.Presentation}/:id`,
+        path: `${Pages.StandPresentation}/:id`,
         data: {
-            pageType: Pages.Presentation,
+            pageType: Pages.StandPresentation,
         },
         loadComponent: () =>
             import('../app/pages/presentation-page/presentation-page.component').then(c => c.PresentationPageComponent),

@@ -3,7 +3,7 @@ export enum Pages {
     Welcome = 'welcome',
     Game = 'game',
     Map = 'map',
-    Presentation = 'presentation',
+    StandPresentation = 'presentation',
     ProductPresentation = 'product-presentation',
     Register = 'register',
     OrganizatorRegister = 'org-register',

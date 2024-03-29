@@ -1,12 +1,12 @@
-@for (item of items; track item) {
+@for (item of groups(); track item) {
     <div (click)="expand(item)" class="tui-space_top-4 container">
-        <svg-icon src="{{item.imgPath}}"></svg-icon>
-        <div class="tui-space_top-4 title">{{item.label}}</div>
+        <svg-icon src="{{item.image_path}}"></svg-icon>
+        <div class="tui-space_top-4 title">{{item.title}}</div>
         <tui-expand [expanded]="!!expandedMap.get(item)">
             <div class="tui-space_top-4"></div>
-            @for (product of item.products; track product) {
+            @for (product of item.product; track product) {
                 <div (click)="goToProduct(product.id)" class="product">
-                    <div>{{product.label}}</div>
+                    <div>{{product.title}}</div>
                     <svg-icon src="assets/arrow-right.svg"></svg-icon>
                 </div>
             }

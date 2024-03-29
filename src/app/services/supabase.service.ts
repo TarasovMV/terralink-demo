@@ -1,11 +1,9 @@
 import {Injectable} from '@angular/core';
 import {AuthSession, createClient, SupabaseClient} from '@supabase/supabase-js';
 import {environment} from '../../environment';
-import {catchError, delay, forkJoin, from, map, Observable, of, switchMap, tap, throwError} from 'rxjs';
-import {CardInfo, StandMeta, PresentationMeta, SupabaseErrors, UserMeta} from '@terralink-demo/models';
+import {from, map, Observable, of, switchMap, tap, throwError} from 'rxjs';
+import {CardInfo, StandMeta, SupabaseErrors, UserMeta, ProductMeta, ProductGroupMeta} from '@terralink-demo/models';
 import {clearPhoneNumber, getEmail, getQrCode} from '../utils';
-import {CARDS} from '../domain/cards.const';
-import {USER_MOCK} from '../domain';
 
 const SERVICE_PASS = '7>1C;_Fgy$J^6?£N-Jw)c';
 
@@ -21,9 +19,9 @@ export class SupabaseService {
     constructor() {
         this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey);
 
-        this.fromSupabase(this.supabase.from('user_presentation').select('*'))
-            .pipe()
-            .subscribe(res => console.log(res));
+        // this.fromSupabase(this.supabase.from('user_presentation').select('*'))
+        //     .pipe()
+        //     .subscribe(res => console.log(res));
 
         // this.signOut();
         // this.getAllProfiles().subscribe(x => console.log(x));
@@ -57,6 +55,16 @@ export class SupabaseService {
         return this.checkUserExist(qrCode).pipe(
             switchMap(exist =>
                 exist ? this.signIn(email).pipe(map(() => true)) : this.signUpQr(qrCode, email).pipe(map(() => false)),
+            ),
+        );
+    }
+
+    getProductGroups(): Observable<ProductGroupMeta[]> {
+        return this.fromSupabase(
+            this.supabase.from('product_group').select('*, product (id, title)').order('order'),
+        ).pipe(
+            switchMap(res =>
+                !res.data?.length ? throwError(() => SupabaseErrors.GetProductGroupsError) : of(res.data),
             ),
         );
     }
@@ -97,20 +105,37 @@ export class SupabaseService {
         );
     }
 
-    getPresentation(id: number): Observable<PresentationMeta> {
-        const key = `presentation_${id}`;
+    getProduct(id: number): Observable<ProductMeta> {
+        const key = `product_${id}`;
         const cache = this.cache.get(key);
 
         if (cache) {
             return of(cache);
         }
 
-        return this.fromSupabase(this.supabase.from('presentation').select('*').eq('id', id).single()).pipe(
-            switchMap(({data}) => (!data ? throwError(() => SupabaseErrors.GetPresentationError) : of(data))),
+        return this.fromSupabase(this.supabase.from('product').select('*').eq('id', id).single()).pipe(
+            switchMap(({data}) => (!data ? throwError(() => SupabaseErrors.GetProductError) : of(data))),
             tap(res => this.cache.set(key, res)),
         );
     }
 
+    getProductsByStand(stand_id: number): Observable<ProductMeta[]> {
+        const key = `products_by_stand_${stand_id}`;
+        const cache = this.cache.get(key);
+
+        if (cache) {
+            return of(cache);
+        }
+
+        return this.fromSupabase(
+            this.supabase.from('product').select('*').order('order').eq('stand_id', stand_id),
+        ).pipe(
+            switchMap(({data}) => (!data ? throwError(() => SupabaseErrors.GetProductError) : of(data))),
+            tap(res => this.cache.set(key, res)),
+        );
+    }
+
+    // TODO
     requestPresentation(id: number, email: string): Observable<unknown> {
         return from(
             this.supabase
@@ -119,20 +144,24 @@ export class SupabaseService {
         );
     }
 
-    checkPresentation(id: number): Observable<boolean> {
-        return this.getSession().pipe(
-            switchMap(res => {
-                if (!res?.user.id) {
-                    return of(false);
-                }
-                return this.fromSupabase(
-                    this.supabase
-                        .from('user_presentation')
-                        .select('*')
-                        .match({user_id: res.user.id, presentation_id: id}),
-                ).pipe(map(({data}) => !!data?.length));
-            }),
-        );
+    // TODO
+    checkPresentation(id: number, type: 'stand' | 'product'): Observable<boolean> {
+        return of(false);
+        // const getFilter = () => {}
+        //
+        // return this.getSession().pipe(
+        //     switchMap(res => {
+        //         if (!res?.user.id) {
+        //             return of(false);
+        //         }
+        //         return this.fromSupabase(
+        //             this.supabase
+        //                 .from(`user_presentation_${type}`)
+        //                 .select('*')
+        //                 .match({user_id: res.user.id, presentation_id: id}),
+        //         ).pipe(map(({data}) => !!data?.length));
+        //     }),
+        // );
     }
 
     getStandsStats(): Observable<CardInfo[]> {

@@ -1,7 +1,10 @@
+import {ProductMeta} from './product-meta.interface';
+
 export interface StandMeta {
     id: number;
     title: string;
     body: string;
-    presentation_id: number;
+    description: string;
+    image_path: string;
     done?: boolean;
 }

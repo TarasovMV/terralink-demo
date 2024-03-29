@@ -1,7 +1,7 @@
 <ui-button (click)="back()" class="tui-space_bottom-8" type="close-black"></ui-button>
 @if(meta(); as meta) {
     <div class="text-title tui-space_bottom-4">{{ meta.title }}</div>
-    <img class="tui-space_bottom-4" src="assets/presentations/{{meta.imgPath}}">
+    <img *ngIf="meta.image_path" class="tui-space_bottom-4" src="{{meta.image_path}}">
     <div class="text-body">{{meta.body}}</div>
     @if (meta.paragraphs.length) {
         <table>
@@ -16,22 +16,6 @@
                     <td>{{ p.body }}</td>
                 </tr>
             }
-<!--            <tr class="text-d-header">-->
-<!--                <td>1.&nbsp;</td>-->
-<!--                <td>Решение для рекрутинга и пребординга персонала</td>-->
-<!--            </tr>-->
-<!--            <tr class="text-d-body">-->
-<!--                <td></td>-->
-<!--                <td>Возможность проведения как индивидуального, так и массового рекрутинга персонала с использованием искусственного интеллекта</td>-->
-<!--            </tr>-->
-<!--            <tr class="text-d-header">-->
-<!--                <td>2.&nbsp;</td>-->
-<!--                <td>Решение для автоматизации HR процессов</td>-->
-<!--            </tr>-->
-<!--            <tr class="text-d-body">-->
-<!--                <td></td>-->
-<!--                <td>Удобное заполнение анкеты кандидата, ознакомления с оффером и его принятия прямо в веб приложении</td>-->
-<!--            </tr>-->
             </tbody>
         </table>
     }

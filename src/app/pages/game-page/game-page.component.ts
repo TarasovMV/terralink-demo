@@ -54,7 +54,7 @@ export class GamePageComponent implements OnInit, OnDestroy {
     private readonly showLoader = inject(LoaderService).showLoader;
 
     readonly cardIndex = signal<number>(0);
-    readonly cards = signal<StandMeta[]>([...CARDS]);
+    readonly cards = signal<StandMeta[]>([]);
     readonly progress = computed<number>(() => {
         return this.cards().reduce((acc, next) => acc + (next.done ? 1 : 0), 0);
     });
@@ -109,7 +109,7 @@ export class GamePageComponent implements OnInit, OnDestroy {
     }
 
     goToPresentation(): void {
-        this.router.navigate([Pages.Presentation, this.currentStand.presentation_id], {
+        this.router.navigate([Pages.StandPresentation, this.currentStand.id], {
             queryParams: {stand_id: this.currentStand.id},
         });
     }

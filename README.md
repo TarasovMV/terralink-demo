@@ -61,3 +61,11 @@ Run `npx nx graph` to show the graph of the workspace. It will show tasks that y
 - [Join the community](https://nx.dev/community)
 - [Subscribe to the Nx Youtube Channel](https://www.youtube.com/@nxdevtools)
 - [Follow us on Twitter](https://twitter.com/nxdevtools)
+
+
+# backlog
+
+- Логика запросить презентацию
+- Диалог карты
+- Проигрывание музыки
+- апишка

@@ -1,11 +1,11 @@
 import {ChangeDetectionStrategy, Component, inject, OnInit, signal, WritableSignal} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Pages, PresentationMeta} from '@terralink-demo/models';
+import {Pages, PresentationMeta, StandMeta} from '@terralink-demo/models';
 import {ButtonComponent} from '@terralink-demo/ui';
 import {TuiAlertService, TuiDialogService} from '@taiga-ui/core';
 import {PolymorpheusComponent} from '@tinkoff/ng-polymorpheus';
-import {catchError, finalize, forkJoin, map, Observable, of, takeUntil, tap} from 'rxjs';
+import {catchError, finalize, forkJoin, map, Observable, of, switchMap, takeUntil, tap, throwError} from 'rxjs';
 import {PresentationSendComponent} from '../../dialogs/presentation-send/presentation-send.component';
 import {TuiDestroyService} from '@taiga-ui/cdk';
 import {SupabaseService} from '../../services/supabase.service';
@@ -14,7 +14,7 @@ import {LoaderService} from '../../services/loader.service';
 interface Presentation {
     title: string;
     body: string;
-    imgPath: string;
+    image_path: string;
     paragraphs: {
         title: string;
         body: string;
@@ -40,6 +40,7 @@ export class PresentationPageComponent implements OnInit {
     private readonly destroy$ = inject(TuiDestroyService);
 
     private readonly id = +(this.route.snapshot.paramMap.get('id') || 1);
+    private readonly isProduct = this.route.snapshot.data['pageType'] === Pages.ProductPresentation;
 
     readonly buttonType = signal<'primary' | 'disabled'>('primary');
     readonly meta = signal<Presentation | null>(null);
@@ -72,6 +73,9 @@ export class PresentationPageComponent implements OnInit {
     }
 
     openSend(): void {
+        this.alertService.open('Функционал временно заблокирован', {status: 'info'}).subscribe();
+        return;
+
         if (this.buttonType() === 'disabled') {
             this.alertService.open('Вы уже запросили эту презентацию').subscribe();
 
@@ -106,34 +110,45 @@ export class PresentationPageComponent implements OnInit {
     }
 
     private checkPresentation(): Observable<unknown> {
-        return this.supabaseService.checkPresentation(this.id).pipe(
+        return this.supabaseService.checkPresentation(this.id, this.isProduct ? 'product' : 'stand').pipe(
             catchError(() => of(false)),
             tap(res => this.buttonType.set(res ? 'disabled' : 'primary')),
         );
     }
 
     private getMeta(): Observable<unknown> {
-        return this.supabaseService.getPresentation(this.id).pipe(tap(res => this.meta.set(this.metaMapper(res))));
+        return (this.isProduct ? this.getByProduct() : this.getByStand()).pipe(
+            tap(presentation => this.meta.set(presentation)),
+        );
     }
 
-    private metaMapper(meta: PresentationMeta): Presentation {
-        const paragraphs = meta.body ? this.getParagraphs(meta.paragraphs) : [];
+    private getByStand(): Observable<Presentation> {
+        let stand: StandMeta | undefined;
 
-        return {
-            title: meta.title,
-            body: meta.body,
-            imgPath: meta.image_path,
-            paragraphs,
-        };
+        return this.supabaseService.getStands().pipe(
+            switchMap(stands => {
+                stand = stands.find(s => s.id === this.id);
+
+                if (!stand) {
+                    return throwError(() => new Error('Stand not found'));
+                }
+
+                return this.supabaseService.getProductsByStand(stand.id);
+            }),
+            map(products => ({
+                ...stand!,
+                body: stand!.description,
+                paragraphs: products,
+            })),
+        );
     }
 
-    private getParagraphs(str: string): Presentation['paragraphs'] {
-        const rawParagraphs = str.split('||');
-
-        return rawParagraphs.map(p => {
-            const [title, body] = p.split('//');
-
-            return {title, body};
-        });
+    private getByProduct(): Observable<Presentation> {
+        return this.supabaseService.getProduct(this.id).pipe(
+            map(product => ({
+                ...product,
+                paragraphs: [],
+            })),
+        );
     }
 }
