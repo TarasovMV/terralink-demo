@@ -6,6 +6,7 @@ export enum Pages {
     Presentation = 'presentation',
     ProductPresentation = 'product-presentation',
     Register = 'register',
+    OrganizatorRegister = 'org-register',
     Rules = 'rules',
     Knowledge = 'knowledge',
     Profile = 'profile',

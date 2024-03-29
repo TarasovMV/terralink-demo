@@ -25,9 +25,16 @@ export const appRoutes: Route[] = [
     },
     {
         path: Pages.Register,
+        data: {isOrganizator: false},
         loadComponent: () =>
             import('../app/pages/register-page/register-page.component').then(c => c.RegisterPageComponent),
         canActivate: [alreadyAuthGuard],
+    },
+    {
+        path: Pages.OrganizatorRegister,
+        data: {isOrganizator: true},
+        loadComponent: () =>
+            import('../app/pages/register-page/register-page.component').then(c => c.RegisterPageComponent),
     },
     {
         path: `${Pages.Presentation}/:id`,

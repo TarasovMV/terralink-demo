@@ -46,7 +46,7 @@ export class SupabaseService {
             switchMap(email => this.signUp(email)),
             map(user_id => ({...meta, user_id, qr_code: qrCode, phone_number: clearPhoneNumber(meta.phone_number)})),
             switchMap(res => this.postUserMeta(res)),
-            switchMap(res => (signIn ? this.signIn(userEmail) : of(null))),
+            switchMap(() => (signIn ? this.signIn(userEmail) : of(null))),
             map(() => qrCode),
         );
     }
@@ -61,8 +61,10 @@ export class SupabaseService {
         );
     }
 
-    getUserById(id: number): Observable<UserMeta> {
-        return of({...USER_MOCK} as UserMeta).pipe(delay(500));
+    getUserByQr(id: number): Observable<UserMeta> {
+        return this.fromSupabase(this.supabase.from('user_meta').select('*').eq('qr_code', id).single()).pipe(
+            switchMap(res => (!res.data ? throwError(() => SupabaseErrors.QrNotFound) : of(res.data))),
+        );
     }
 
     getCurrentUser(): Observable<UserMeta> {
@@ -139,8 +141,10 @@ export class SupabaseService {
         );
     }
 
-    setStandDone(cardId: number): Observable<unknown> {
-        return from(this.supabase.from('user_stand').insert({stand_id: cardId, user_id: this.session!.user.id}));
+    setStandDone(cardId: number, user_id = this.session!.user.id, comment?: string): Observable<unknown> {
+        return this.fromSupabase(this.supabase.from('user_stand').insert({stand_id: cardId, user_id, comment})).pipe(
+            switchMap(res => (!!res.error ? throwError(() => SupabaseErrors.SetStandDoneError) : of(res))),
+        );
     }
 
     getSession(skipWrite = false) {

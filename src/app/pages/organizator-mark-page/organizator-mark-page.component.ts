@@ -35,11 +35,11 @@ export class OrganizatorMarkPageComponent implements OnInit {
     private readonly showLoader = inject(LoaderService).showLoader;
     private readonly router = inject(Router);
 
-    private readonly userId = inject(ActivatedRoute).snapshot.queryParamMap.get('user');
+    private readonly userId = inject(ActivatedRoute).snapshot.queryParamMap.get('qr_code');
 
     readonly formGroup = new FormGroup({
         comment: new FormControl<string>(''),
-        stand: new FormControl<number | undefined>(undefined, [Validators.required]),
+        stand: new FormControl<StandMeta | undefined>(undefined, [Validators.required]),
     });
 
     readonly stands: WritableSignal<StandMeta[]> = signal([]);
@@ -54,19 +54,53 @@ export class OrganizatorMarkPageComponent implements OnInit {
 
         this.showLoader.set(true);
 
-        forkJoin([this.supabaseService.getUserById(+this.userId), this.supabaseService.getStands()])
+        forkJoin([this.supabaseService.getUserByQr(+this.userId), this.supabaseService.getStands()])
             .pipe(
                 finalize(() => this.showLoader.set(false)),
                 takeUntil(this.destroy$),
             )
-            .subscribe(([user, stands]) => {
-                this.user.set(user);
-                this.stands.set(stands);
+            .subscribe({
+                next: ([user, stands]) => {
+                    this.user.set(user);
+                    this.stands.set(stands);
+                },
+                error: () =>
+                    this.alertService
+                        .open('Ошибка при получении пользователя', {status: 'error'})
+                        .pipe(takeUntil(this.destroy$))
+                        .subscribe(),
             });
     }
 
     submit(): void {
-        this.router.navigate([Pages.Organizator]);
+        if (!this.formGroup.valid) {
+            this.alertService.open('Выберите стенд', {status: 'error'}).pipe(takeUntil(this.destroy$)).subscribe();
+
+            return;
+        }
+
+        this.showLoader.set(true);
+        this.supabaseService
+            .setStandDone(
+                this.formGroup.value.stand!.id,
+                this.user()!.user_id,
+                this.formGroup.value.comment ?? undefined,
+            )
+            .pipe(
+                finalize(() => this.showLoader.set(false)),
+                takeUntil(this.destroy$),
+            )
+            .subscribe({
+                next: () => {
+                    this.router.navigate([Pages.Organizator]);
+                },
+                error: () => {
+                    this.alertService
+                        .open('Ошибка при отправке данных', {status: 'error'})
+                        .pipe(takeUntil(this.destroy$))
+                        .subscribe();
+                },
+            });
     }
 
     cancel(): void {
