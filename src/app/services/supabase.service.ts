@@ -60,7 +60,7 @@ export class SupabaseService {
     }
 
     getProductGroups(): Observable<ProductGroupMeta[]> {
-        const key = `current-user`;
+        const key = `product_groups`;
         const cache = this.cache.get(key);
 
         if (cache) {
@@ -143,33 +143,28 @@ export class SupabaseService {
         );
     }
 
-    // TODO
-    requestPresentation(id: number, email: string): Observable<unknown> {
+    requestPresentation(id: number, email: string, type: 'stand' | 'product'): Observable<unknown> {
         return from(
             this.supabase
-                .from('user_presentation')
-                .insert({presentation_id: id, email, user_id: this.session!.user.id}),
+                .from(`user_presentation_${type}`)
+                .insert({[`${type}_id`]: id, email, user_id: this.session?.user?.id}),
         );
     }
 
-    // TODO
     checkPresentation(id: number, type: 'stand' | 'product'): Observable<boolean> {
-        return of(false);
-        // const getFilter = () => {}
-        //
-        // return this.getSession().pipe(
-        //     switchMap(res => {
-        //         if (!res?.user.id) {
-        //             return of(false);
-        //         }
-        //         return this.fromSupabase(
-        //             this.supabase
-        //                 .from(`user_presentation_${type}`)
-        //                 .select('*')
-        //                 .match({user_id: res.user.id, presentation_id: id}),
-        //         ).pipe(map(({data}) => !!data?.length));
-        //     }),
-        // );
+        return this.getSession().pipe(
+            switchMap(res => {
+                if (!res?.user.id) {
+                    return of(false);
+                }
+                return this.fromSupabase(
+                    this.supabase
+                        .from(`user_presentation_${type}`)
+                        .select('*')
+                        .match({user_id: res.user.id, [`${type}_id`]: id}),
+                ).pipe(map(({data}) => !!data?.length));
+            }),
+        );
     }
 
     getStandsStats(): Observable<CardInfo[]> {

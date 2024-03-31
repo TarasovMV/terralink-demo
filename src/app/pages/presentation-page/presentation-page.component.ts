@@ -74,7 +74,7 @@ export class PresentationPageComponent implements OnInit {
 
     openSend(): void {
         this.alertService.open('Функционал временно заблокирован', {status: 'info'}).subscribe();
-        return;
+        // return;
 
         if (this.buttonType() === 'disabled') {
             this.alertService.open('Вы уже запросили эту презентацию').subscribe();
@@ -100,6 +100,7 @@ export class PresentationPageComponent implements OnInit {
                         data: {
                             id: this.id,
                             email,
+                            type: this.isProduct ? 'product' : 'stand',
                         },
                     })
                     .pipe(takeUntil(this.destroy$))

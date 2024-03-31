@@ -2,7 +2,6 @@ import {inject, Injectable, signal} from '@angular/core';
 import {SupabaseService} from './supabase.service';
 import {catchError, forkJoin, map, Observable, of} from 'rxjs';
 import {StandMeta} from '@terralink-demo/models';
-import {CARDS} from '../domain/cards.const';
 
 @Injectable({
     providedIn: 'root',
@@ -22,5 +21,12 @@ export class GameService {
 
     setDone(cardId: number): Observable<unknown> {
         return this.supabaseService.setStandDone(cardId);
+    }
+
+    donePlaySound(): void {
+        const audio = new Audio();
+        audio.src = 'assets/sounds/success.mp3';
+        audio.currentTime = 0;
+        audio.play().then();
     }
 }

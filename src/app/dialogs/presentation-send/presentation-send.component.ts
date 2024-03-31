@@ -17,7 +17,10 @@ import {TuiDestroyService} from '@taiga-ui/cdk';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PresentationSendComponent {
-    private readonly context = inject(POLYMORPHEUS_CONTEXT) as TuiDialogContext<boolean, {id: number; email: string}>;
+    private readonly context = inject(POLYMORPHEUS_CONTEXT) as TuiDialogContext<
+        boolean,
+        {id: number; email: string; type: 'product' | 'stand'}
+    >;
     private readonly supabaseService = inject(SupabaseService);
     private readonly destroy$ = inject(TuiDestroyService);
 
@@ -46,7 +49,7 @@ export class PresentationSendComponent {
 
         this.showLoader.set(true);
         this.supabaseService
-            .requestPresentation(+this.context.data.id, this.control.value!)
+            .requestPresentation(+this.context.data.id, this.control.value!, this.context.data.type)
             .pipe(
                 finalize(() => {
                     this.showLoader.set(false);

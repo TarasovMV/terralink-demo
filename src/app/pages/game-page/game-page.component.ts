@@ -18,7 +18,6 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {StandMeta, Pages} from '@terralink-demo/models';
 import {LoaderService} from '../../services/loader.service';
 import {GameService} from '../../services/game.service';
-import {CARDS} from '../../domain/cards.const';
 import {PolymorpheusComponent} from '@tinkoff/ng-polymorpheus';
 import {ScannerComponent} from '../../dialogs/scanner/scanner.component';
 import {TuiAlertService, TuiDialogService} from '@taiga-ui/core';
@@ -153,13 +152,12 @@ export class GamePageComponent implements OnInit, OnDestroy {
                 if (card) {
                     card.done = true;
                     this.updateCardIndex(this.cards().indexOf(card));
+                    this.gameService.donePlaySound();
                 } else {
                     this.showError();
                 }
 
                 this.cards.set([...cards]);
-
-                setTimeout(() => this.gameService.forcePlayMusic.set(true));
             });
     }
 

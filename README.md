@@ -65,6 +65,4 @@ Run `npx nx graph` to show the graph of the workspace. It will show tasks that y
 
 # backlog
 
-- Логика запросить презентацию
-- Проигрывание музыки
 - апишка
