@@ -1,0 +1,31 @@
+{
+    "name": "terralink-demo-api",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "apps/terralink-demo-api/src",
+    "projectType": "application",
+    "targets": {
+        "serve": {
+            "executor": "@nx/js:node",
+            "defaultConfiguration": "development",
+            "options": {
+                "buildTarget": "terralink-demo-api:build"
+            },
+            "configurations": {
+                "development": {
+                    "buildTarget": "terralink-demo-api:build:development"
+                },
+                "production": {
+                    "buildTarget": "terralink-demo-api:build:production"
+                }
+            }
+        },
+        "test": {
+            "executor": "@nx/jest:jest",
+            "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+            "options": {
+                "jestConfig": "apps/terralink-demo-api/jest.config.ts"
+            }
+        }
+    },
+    "tags": []
+}

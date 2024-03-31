@@ -15,8 +15,8 @@
         "skipDefaultLibCheck": true,
         "baseUrl": ".",
         "paths": {
-            "@terralink-demo/pages/*": ["apps/terralink-demo/src/app/pages/*"],
             "@terralink-demo/models": ["libs/models/src/index.ts"],
+            "@terralink-demo/pages/*": ["apps/terralink-demo/src/app/pages/*"],
             "@terralink-demo/ui": ["libs/ui/src/index.ts"]
         }
     },

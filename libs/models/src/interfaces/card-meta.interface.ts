@@ -1,5 +1,3 @@
-import {ProductMeta} from './product-meta.interface';
-
 export interface StandMeta {
     id: number;
     title: string;

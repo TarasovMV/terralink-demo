@@ -71,5 +71,21 @@
         }
     },
     "defaultProject": "terralink-demo",
-    "nxCloudAccessToken": "NmM2N2VkOWItMzBjMC00NjAxLWIzZGQtYmMzYjIzMzE3MTgyfHJlYWQtd3JpdGU="
+    "nxCloudAccessToken": "NmM2N2VkOWItMzBjMC00NjAxLWIzZGQtYmMzYjIzMzE3MTgyfHJlYWQtd3JpdGU=",
+    "plugins": [
+        {
+            "plugin": "@nx/webpack/plugin",
+            "options": {
+                "buildTargetName": "build",
+                "serveTargetName": "serve",
+                "previewTargetName": "preview"
+            }
+        },
+        {
+            "plugin": "@nx/eslint/plugin",
+            "options": {
+                "targetName": "lint"
+            }
+        }
+    ]
 }

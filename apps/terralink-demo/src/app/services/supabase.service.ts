@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {AuthSession, createClient, SupabaseClient} from '@supabase/supabase-js';
 import {environment} from '../../environment';
 import {from, map, Observable, of, switchMap, tap, throwError} from 'rxjs';
-import {CardInfo, StandMeta, SupabaseErrors, UserMeta, ProductMeta, ProductGroupMeta} from '@terralink-demo/models';
+import {StandStats, StandMeta, SupabaseErrors, UserMeta, ProductMeta, ProductGroupMeta} from '@terralink-demo/models';
 import {clearPhoneNumber, getEmail, getQrCode} from '../utils';
 
 const SERVICE_PASS = '7>1C;_Fgy$J^6?£N-Jw)c';
@@ -167,7 +167,7 @@ export class SupabaseService {
         );
     }
 
-    getStandsStats(): Observable<CardInfo[]> {
+    getStandsStats(): Observable<StandStats[]> {
         return from(this.supabase.from('user_stand').select('*').eq('user_id', this.session!.user.id)).pipe(
             map(res => res?.data ?? []),
         );
