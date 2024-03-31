@@ -1,0 +1,44 @@
+zxing-scanner {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+
+    ::ng-deep {
+        video {
+            height: 100%;
+        }
+    }
+}
+
+:host {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--color-black);
+}
+
+ui-button {
+    display: block;
+    z-index: 1;
+    position: fixed;
+    filter: drop-shadow(4px 4px 6px rgba(0, 0, 0, 1));
+    right: 1rem;
+    top: 1rem;
+}
+
+div {
+    position: fixed !important;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+
+    ::ng-deep {
+        video {
+        }
+    }
+}

@@ -1,0 +1,10 @@
+<tui-root>
+    @if (showLoader()) {
+    <tui-loader
+        [inheritColor]="true"
+        size="xxl"
+        class="loader-container"
+    ></tui-loader>
+    }
+    <router-outlet></router-outlet>
+</tui-root>

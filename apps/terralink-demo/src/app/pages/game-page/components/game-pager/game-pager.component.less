@@ -1,0 +1,19 @@
+:host {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.circle {
+    width: 0.5rem;
+    height: 0.5rem;
+    background: var(--tui-base-04);
+    border-radius: 0.25rem;
+    transition: 0.3s;
+
+    &_active {
+        width: 1.5rem;
+        background: var(--tui-base-01);
+        transition: 0.3s;
+    }
+}

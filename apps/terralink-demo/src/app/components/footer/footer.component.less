@@ -1,0 +1,39 @@
+:host {
+    position: fixed;
+    display: flex;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--footer-height);
+    background: var(--color-black);
+    border-top: solid 1px #323232;
+    box-sizing: border-box;
+    z-index: 99;
+}
+
+.item {
+    display: flex;
+    flex-grow: 1;
+    flex-flow: column;
+    align-items: center;
+    justify-content: center;
+
+    font-weight: 600;
+    color: var(--color-gray);
+
+    transition: 300ms;
+
+    svg-icon {
+        display: flex;
+        height: 24px;
+        transform: scale(0.8);
+    }
+
+    &__active {
+        color: var(--color-white);
+
+        svg-icon {
+            color: var(--color-primary);
+        }
+    }
+}

@@ -1,0 +1,42 @@
+<div class="header tui-space_bottom-8">
+    <div class="tui-space_right-4">Соберите все&nbsp;фрагменты мелодии</div>
+    <game-play
+        [count]="cards().length"
+        [progress]="progress()"
+    ></game-play>
+</div>
+
+<swiper-container slides-per-view="1">
+    @for (card of cards(); track card.id) {
+    <swiper-slide>
+        <game-card
+            (click)="goToPresentation()"
+            (openPresentation)="goToPresentation()"
+            (openMap)="goToMap()"
+            [data]="card"
+            [done]="card.done"
+        ></game-card>
+    </swiper-slide>
+    }
+</swiper-container>
+
+<game-pager
+    [activeIdx]="cardIndex()"
+    [count]="cards().length"
+    class="tui-space_top-4"
+></game-pager>
+
+<ui-button
+    (click)="scanQr()"
+    class="tui-space_top-12"
+    type="secondary"
+>
+    <svg-icon
+        class="tui-space_right-2"
+        src="assets/qr-code.svg"
+        style="display: flex"
+    ></svg-icon>
+    Получить фрагмент
+</ui-button>
+
+<div class="footer-space"></div>

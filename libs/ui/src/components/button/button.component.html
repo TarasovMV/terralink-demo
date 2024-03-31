@@ -1,13 +1,23 @@
 @if (type === 'close') {
-    <button class="close" style="color: var(--color-white)">
-        <svg-icon src="assets/close.svg"></svg-icon>
-    </button>
+<button
+    class="close"
+    style="color: var(--color-white)"
+>
+    <svg-icon src="assets/close.svg"></svg-icon>
+</button>
 } @else if (type === 'close-black') {
-    <button class="close" style="color: var(--color-black)">
-        <svg-icon src="assets/close.svg"></svg-icon>
-    </button>
+<button
+    class="close"
+    style="color: var(--color-black)"
+>
+    <svg-icon src="assets/close.svg"></svg-icon>
+</button>
 } @else {
-    <button class="default" tuiRipple [class]="type">
-        <ng-content></ng-content>
-    </button>
+<button
+    class="default"
+    tuiRipple
+    [class]="type"
+>
+    <ng-content></ng-content>
+</button>
 }

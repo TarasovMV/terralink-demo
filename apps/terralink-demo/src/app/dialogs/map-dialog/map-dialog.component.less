@@ -1,0 +1,38 @@
+:host {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-flow: column;
+    width: 100%;
+    height: var(--max-height);
+    min-height: var(--max-height);
+    padding: 4vh 0 4vh;
+    background: var(--color-black);
+    box-sizing: border-box;
+}
+
+.wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    width: 100%;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    padding: 0 var(--side-padding);
+}
+
+.text-title {
+    line-height: 24px;
+    font-size: 30px;
+    font-weight: 800;
+    color: var(--color-white);
+}
+
+map {
+    flex-grow: 1;
+}

@@ -1,0 +1,111 @@
+<ui-button
+    (click)="goToBack()"
+    class="tui-space_bottom-8"
+    type="close"
+></ui-button>
+<div class="tui-space_bottom-2 text-title">Регистрация на&nbsp;мероприятие</div>
+<div class="tui-space_bottom-10 text-body">
+    Пожалуйста, обратите внимание, что внесение данных, таких как телефон, электронная почта, организация  и должность,
+    является добровольным. Вы можете указать любые данные. Эта информация пригодится Вам  для повторного входа в
+    приложение
+</div>
+<div
+    [formGroup]="form"
+    class="form"
+>
+    <div class="text-label">Введите ваше ФИО *</div>
+    <input
+        [class.error]="checkControlError('fio')"
+        formControlName="fio"
+        placeholder="Иванов Иван Иванович"
+        type="text"
+    />
+
+    <div class="text-label">Введите Ваш телефон</div>
+    <input
+        [class.error]="checkControlError('phone')"
+        [maskito]="phoneMask"
+        formControlName="phone"
+        placeholder="+7 999 999 99 99"
+        type="tel"
+    />
+
+    <div class="text-label">Введите Ваш E-mail</div>
+    <input
+        [class.error]="checkControlError('email')"
+        formControlName="email"
+        placeholder="E-mail"
+        type="email"
+    />
+
+    <div class="text-label">Наименование организации</div>
+    <input
+        [class.error]="checkControlError('organization')"
+        formControlName="organization"
+        placeholder="Организация"
+        type="text"
+    />
+
+    <div class="text-label">Ваша должность</div>
+    <input
+        [class.error]="checkControlError('position')"
+        formControlName="position"
+        placeholder="Должность"
+        type="text"
+    />
+
+    <div class="tui-space_bottom-2 text-title">Выберите стиль&nbsp;музыки</div>
+    <div class="tui-space_bottom-10 text-body">Будет использоваться для геймификации на стендах выставки</div>
+
+    <div class="radio-group">
+        <tui-radio-labeled
+            size="l"
+            formControlName="musicGenre"
+            class="tui-space_bottom-3"
+            item="Рок"
+        >
+            Рок
+        </tui-radio-labeled>
+        <tui-radio-labeled
+            size="l"
+            formControlName="musicGenre"
+            class="tui-space_bottom-3"
+            item="Джаз"
+        >
+            Джаз
+        </tui-radio-labeled>
+        <tui-radio-labeled
+            size="l"
+            formControlName="musicGenre"
+            item="Классика"
+        >
+            Классика
+        </tui-radio-labeled>
+    </div>
+
+    <div class="tui-space_top-8 tui-space_bottom-12 checkbox-container">
+        <input
+            class="checkbox"
+            formControlName="agreement"
+            id="agreement-checkbox"
+            name="checkbox-1"
+            type="checkbox"
+        />
+        <label
+            class="checkbox-label"
+            for="agreement-checkbox"
+        ></label>
+        <div class="checkbox-text">
+            Даю согласие
+            <a
+                href="https://terralink.ru/about/policy/soglasie-na-obrabotku-personalnykh-dannykh-ooo-terralink/"
+                rel="noopener noreferrer"
+                target="_blank"
+            >
+                на обработку персональных данных
+            </a>
+        </div>
+    </div>
+
+    <ui-button (click)="submitForm()">Зарегистрироваться</ui-button>
+</div>

@@ -1,0 +1,11 @@
+@for (item of items(); track item.value) {
+<div
+    tuiRipple
+    class="item"
+    [class.item__active]="item.active"
+    (click)="clickItem(item.redirectToUrl)"
+>
+    <svg-icon src="{{ item.iconPath }}"></svg-icon>
+    <div class="tui-space_top-1 label">{{ item.label }}</div>
+</div>
+}

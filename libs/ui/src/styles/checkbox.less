@@ -18,7 +18,8 @@
     position: absolute;
 }
 
-.checkbox, .checkbox-label {
+.checkbox,
+.checkbox-label {
     display: block;
     cursor: pointer;
     width: 24px;
@@ -34,7 +35,7 @@
 .checkbox + .checkbox-label:before {
     content: '';
     background: transparent;
-    border: 2px solid #FFF;
+    border: 2px solid #fff;
     border-radius: 6px;
     display: inline-block;
     vertical-align: middle;
@@ -47,8 +48,8 @@
 }
 
 .checkbox:checked + .checkbox-label:before {
-    content: "\f00c";
+    content: '\f00c';
     font-family: 'FontAwesome';
-    color: #FC6238;
-    border-color: #FC6238;
+    color: #fc6238;
+    border-color: #fc6238;
 }

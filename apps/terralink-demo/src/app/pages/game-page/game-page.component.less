@@ -1,0 +1,41 @@
+:host {
+    display: flex;
+    flex-flow: column;
+    padding: 4vh var(--side-padding) 3vh;
+    min-height: var(--max-height);
+    background-image: url('../../../assets/background.png');
+    background-size: cover;
+    box-sizing: border-box;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    line-height: 1.75rem;
+    font-size: 1.75rem;
+    font-weight: 400;
+
+    .pleer {
+        width: 86px;
+        min-width: 86px;
+        height: 86px;
+        border-radius: 50%;
+        border: solid 2px #fff;
+    }
+}
+
+swiper-container {
+    flex-grow: 1;
+    width: calc(100% + 4rem);
+    margin-left: -2rem;
+}
+
+game-card {
+    min-height: var(--swiper-container-height);
+    width: calc(100% - 4rem);
+    margin-left: 2rem;
+}
+
+game-pager {
+    width: 100%;
+}
