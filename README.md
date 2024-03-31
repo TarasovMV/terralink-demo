@@ -13,4 +13,4 @@
 - `npm i`
 - `npx nx build terralink-demo-api`
 - `docker build --platform linux/amd64 -t {user}/terralink-demo-api -f api.Dockerfile .`
-- `docker run -d --env-file="api.env" --network="host" antantaru/terralink-demo-api`
+- `docker run -d --env-file="api.env" -p3333:3333 {user}/terralink-demo-api`
