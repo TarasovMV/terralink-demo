@@ -60,12 +60,20 @@ export class SupabaseService {
     }
 
     getProductGroups(): Observable<ProductGroupMeta[]> {
+        const key = `current-user`;
+        const cache = this.cache.get(key);
+
+        if (cache) {
+            return of(cache);
+        }
+
         return this.fromSupabase(
             this.supabase.from('product_group').select('*, product (id, title)').order('order'),
         ).pipe(
             switchMap(res =>
                 !res.data?.length ? throwError(() => SupabaseErrors.GetProductGroupsError) : of(res.data),
             ),
+            tap(res => this.cache.set(key, res)),
         );
     }
 

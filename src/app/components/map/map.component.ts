@@ -1,4 +1,4 @@
-import {AfterViewInit, ChangeDetectionStrategy, Component, signal} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, Component, Input, signal} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {SvgIconComponent} from 'angular-svg-icon';
 
@@ -16,13 +16,20 @@ const SVG_CONFIG = {
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MapComponent implements AfterViewInit {
+    @Input() standId: number | undefined;
+
     readonly svgWidth = signal<number>(0);
     readonly svgHeight = signal<number>(0);
 
-    readonly mapPath = `assets/maps/map.svg`;
-
     private get containerEl(): Element {
         return document.getElementsByClassName('container')[0];
+    }
+
+    get mapPath(): string {
+        if (this.standId) {
+            return `assets/maps/stands/map_${this.standId}.svg`;
+        }
+        return `assets/maps/map.svg`;
     }
 
     ngAfterViewInit(): void {

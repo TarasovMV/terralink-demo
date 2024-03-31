@@ -22,4 +22,10 @@ export class GameCardComponent {
     get statusText(): string {
         return this.done ? 'Фрагмент получен' : 'Фрагмент не получен';
     }
+
+    openMapClick(e: Event): void {
+        e.stopPropagation();
+
+        this.openMap.emit();
+    }
 }

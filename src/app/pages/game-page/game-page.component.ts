@@ -25,6 +25,7 @@ import {TuiAlertService, TuiDialogService} from '@taiga-ui/core';
 import {TuiDestroyService} from '@taiga-ui/cdk';
 import {SvgIconComponent} from 'angular-svg-icon';
 import {finalize, takeUntil} from 'rxjs';
+import {MapDialogComponent} from '../../dialogs/map-dialog/map-dialog.component';
 
 @Component({
     selector: 'game-page',
@@ -105,7 +106,13 @@ export class GamePageComponent implements OnInit, OnDestroy {
     }
 
     goToMap(): void {
-        this.router.navigate([Pages.Map], {queryParams: {id: this.currentStand.id}});
+        this.dialog
+            .open<string>(new PolymorpheusComponent(MapDialogComponent), {
+                size: 'page',
+                closeable: false,
+            })
+            .pipe(takeUntil(this.destroy$))
+            .subscribe();
     }
 
     goToPresentation(): void {
