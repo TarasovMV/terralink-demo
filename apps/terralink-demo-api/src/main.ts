@@ -1,6 +1,6 @@
 import express from 'express';
 import pgp from 'pg-promise';
-import {StandApi, StandStats, UserApi, UserMeta} from '@terralink-demo/models';
+import {StandApi, StandMeta, StandStats, UserApi, UserMeta} from '@terralink-demo/models';
 
 export function argsConfig<T>(key: string): T {
     const args = process.argv.slice(2);
@@ -59,6 +59,26 @@ app.get('/api/record_visitor', async (req, res) => {
         music_type: u.music_genre,
         full_name: u.fullname || '',
         record_time: new Date(u.created_at),
+    }));
+
+    setCache(key, response);
+
+    res.send(response);
+});
+
+app.get('/api/record_stand', async (req, res) => {
+    const key = '/api/record_stand';
+    const cached = getFromCache(key);
+
+    if (cached) {
+        res.send(cached);
+        return;
+    }
+
+    const stands = (await db.any('SELECT * FROM stand')) as StandMeta[];
+    const response: any[] = stands.map(s => ({
+        id_stand: s.id,
+        title: s.title,
     }));
 
     setCache(key, response);
