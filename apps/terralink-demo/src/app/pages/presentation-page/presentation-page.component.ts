@@ -1,7 +1,7 @@
-import {ChangeDetectionStrategy, Component, inject, OnInit, signal, WritableSignal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, OnInit, signal} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Pages, PresentationMeta, StandMeta} from '@terralink-demo/models';
+import {Pages, StandMeta} from '@terralink-demo/models';
 import {ButtonComponent} from '@terralink-demo/ui';
 import {TuiAlertService, TuiDialogService} from '@taiga-ui/core';
 import {PolymorpheusComponent} from '@tinkoff/ng-polymorpheus';
