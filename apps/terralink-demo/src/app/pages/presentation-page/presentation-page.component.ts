@@ -73,9 +73,6 @@ export class PresentationPageComponent implements OnInit {
     }
 
     openSend(): void {
-        this.alertService.open('Функционал временно заблокирован', {status: 'info'}).subscribe();
-        // return;
-
         if (this.buttonType() === 'disabled') {
             this.alertService.open('Вы уже запросили эту презентацию').subscribe();
 
