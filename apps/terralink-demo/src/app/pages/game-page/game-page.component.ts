@@ -25,6 +25,7 @@ import {TuiDestroyService} from '@taiga-ui/cdk';
 import {SvgIconComponent} from 'angular-svg-icon';
 import {finalize, takeUntil} from 'rxjs';
 import {MapDialogComponent} from '../../dialogs/map-dialog/map-dialog.component';
+import {GameProgressButtonComponent} from '@terralink-demo/pages/game-page/components/game-progress-button/game-progress-button.component';
 
 @Component({
     selector: 'game-page',
@@ -37,6 +38,7 @@ import {MapDialogComponent} from '../../dialogs/map-dialog/map-dialog.component'
         ButtonComponent,
         GamePlayComponent,
         SvgIconComponent,
+        GameProgressButtonComponent,
     ],
     providers: [TuiDestroyService],
     schemas: [NO_ERRORS_SCHEMA],
@@ -55,8 +57,17 @@ export class GamePageComponent implements OnInit, OnDestroy {
 
     readonly cardIndex = signal<number>(0);
     readonly cards = signal<StandMeta[]>([]);
-    readonly progress = computed<number>(() => {
+    readonly progressCount = computed<number>(() => {
         return this.cards().reduce((acc, next) => acc + (next.done ? 1 : 0), 0);
+    });
+    readonly progress = computed<number>(() => {
+        const cards = this.cards();
+
+        if (!cards.length) {
+            return 0;
+        }
+
+        return cards.reduce((acc, next) => acc + (next.done ? 1 : 0), 0) / cards.length;
     });
 
     private get swiperElement(): any {

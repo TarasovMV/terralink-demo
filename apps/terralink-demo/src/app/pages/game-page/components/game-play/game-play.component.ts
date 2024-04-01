@@ -16,7 +16,6 @@ import {GameService} from '../../../../services/game.service';
 })
 export class GamePlayComponent {
     @Input() progress = 0;
-    @Input() count = 0;
 
     private readonly forcePlay = inject(GameService).forcePlayMusic;
     private audio = new Audio();
