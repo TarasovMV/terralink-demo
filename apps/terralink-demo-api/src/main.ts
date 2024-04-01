@@ -14,6 +14,8 @@ export function argsConfig<T>(key: string): T {
 
 const DB_URL = argsConfig<string>('DB_URL') || process.env.DB_URL;
 
+console.log(DB_URL);
+
 const app = express();
 const db = pgp()(DB_URL);
 const cache = new Map<string, {data: any; expires: number}>();
@@ -51,7 +53,7 @@ app.get('/api/record_visitor', async (req, res) => {
         return;
     }
 
-    const users = await db.any<UserMeta>('SELECT * FROM user_meta');
+    const users = (await db.any('SELECT * FROM user_meta')) as UserMeta[];
     const response: UserApi[] = users.map(u => ({
         id_visitor: u.user_id,
         music_type: u.music_genre,
@@ -73,7 +75,7 @@ app.get('/api/visitor_route', async (req, res) => {
         return;
     }
 
-    const standStats = await db.any<StandStats>('SELECT * FROM user_stand');
+    const standStats = (await db.any('SELECT * FROM user_stand')) as StandStats[];
     const response: StandApi[] = standStats.map(s => ({
         id_visitor: s.user_id,
         id_stand: s.stand_id,
