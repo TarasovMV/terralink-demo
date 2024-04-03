@@ -1,7 +1,6 @@
 import express from 'express';
 import pgp from 'pg-promise';
 import { StandApi, StandMeta, StandStats, UserApi, UserMeta } from '@terralink-demo/models';
-import { jsonToCsv } from './utils';
 
 export function argsConfig<T>(key: string): T {
     const args = process.argv.slice(2);
@@ -111,16 +110,25 @@ app.get('/api/visitor_route', async (req, res) => {
 
 app.get('/api/record_visitor/csv', async (req, res) => {
     const users = (await db.any('SELECT * FROM user_meta')) as UserMeta[];
-    const response: any[] = users.map(u => ({
+    const userList: any[] = users.map(u => ({
         qr_code: u.qr_code,
         full_name: u.fullname || '',
-        music_type: u.music_genre,
-        organization: u.organization,
+        music_type: u.music_genre || '',
+        organization: u.organization || '',
     }));
 
+    if (userList.length === 0) {
+        res.status(404).end('Нет участников');
+    }
+
+    const header = 'QR-код;Посетитель;Стиль музыки'
+    const rows = [];
+    for (const user of userList) {
+        rows.push(`${user.qr_code};${user.full_name}\\${user.organization};${user.music_type}`);
+    }
     res.setHeader('Content-Type', 'text/csv;');
     res.setHeader('Content-Disposition', 'attachment; filename=Users.csv');
-    res.status(200).end(jsonToCsv(response));
+    res.status(200).end(`\uFEFF${header}\n${rows.join('\n')}`);
 });
 
 const port = process.env.PORT || 3333;
