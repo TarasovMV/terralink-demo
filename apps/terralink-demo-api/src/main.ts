@@ -1,12 +1,13 @@
 import express from 'express';
 import pgp from 'pg-promise';
-import {StandApi, StandMeta, StandStats, UserApi, UserMeta} from '@terralink-demo/models';
+import { StandApi, StandMeta, StandStats, UserApi, UserMeta } from '@terralink-demo/models';
+import { jsonToCsv } from './utils';
 
 export function argsConfig<T>(key: string): T {
     const args = process.argv.slice(2);
     const config = args.reduce((cur, next) => {
         const arg = next.split('=');
-        return {...cur, [arg[0]]: arg[1]};
+        return { ...cur, [arg[0]]: arg[1] };
     }, {});
 
     return config?.[key] || undefined;
@@ -18,7 +19,7 @@ console.log(DB_URL);
 
 const app = express();
 const db = pgp()(DB_URL);
-const cache = new Map<string, {data: any; expires: number}>();
+const cache = new Map<string, { data: any; expires: number }>();
 
 const getFromCache = (key: string) => {
     const cached = cache.get(key);
@@ -41,7 +42,7 @@ const setCache = <T>(key: string, data: T): void => {
 db.connect().then();
 
 app.get('/api', (req, res) => {
-    res.send({message: 'Welcome to terralink-demo-api!'});
+    res.send({ message: 'Welcome to terralink-demo-api!' });
 });
 
 app.get('/api/record_visitor', async (req, res) => {
@@ -59,6 +60,7 @@ app.get('/api/record_visitor', async (req, res) => {
         music_type: u.music_genre,
         full_name: u.fullname || '',
         record_time: new Date(u.created_at),
+        organization: u.organization,
     }));
 
     setCache(key, response);
@@ -105,6 +107,20 @@ app.get('/api/visitor_route', async (req, res) => {
     setCache(key, response);
 
     res.send(response);
+});
+
+app.get('/api/record_visitor/csv', async (req, res) => {
+    const users = (await db.any('SELECT * FROM user_meta')) as UserMeta[];
+    const response: any[] = users.map(u => ({
+        qr_code: u.qr_code,
+        full_name: u.fullname || '',
+        music_type: u.music_genre,
+        organization: u.organization,
+    }));
+
+    res.setHeader('Content-Type', 'text/csv;');
+    res.setHeader('Content-Disposition', 'attachment; filename=Users.csv');
+    res.status(200).end(jsonToCsv(response));
 });
 
 const port = process.env.PORT || 3333;
