@@ -13,11 +13,12 @@ import {LoaderService} from '../../services/loader.service';
 import {NETWORK_ERROR} from '../../domain';
 import {SvgIconComponent} from 'angular-svg-icon';
 import {trimUserQrCode} from '../../utils';
+import {CodeInputComponent} from '@terralink-demo/pages/welcome-page/components/code-input/code-input.component';
 
 @Component({
     selector: 'welcome-page',
     standalone: true,
-    imports: [CommonModule, ButtonComponent, SvgIconComponent],
+    imports: [CommonModule, ButtonComponent, SvgIconComponent, CodeInputComponent],
     providers: [TuiDestroyService],
     templateUrl: './welcome-page.component.html',
     styleUrl: './welcome-page.component.less',

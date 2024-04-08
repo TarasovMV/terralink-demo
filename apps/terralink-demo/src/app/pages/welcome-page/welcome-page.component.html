@@ -9,13 +9,19 @@
 </div>
 <div class="text-title-1">Бизнес</div>
 <div class="text-title-2">как оркестр</div>
+
 <div class="space"></div>
+
 <div class="tui-space_bottom-4 text-body">
-    Отсканируйте Ваш личный
-    <br />
-    QR код с бейджа для входа
+    Введите ваш код с бейджа
 </div>
+<code-input></code-input>
+<ui-button class="tui-space_top-4">Войти</ui-button>
+
+<div class="space"></div>
+
 <ui-button
+    type="secondary"
     (click)="openScanner()"
 >
     <svg-icon
