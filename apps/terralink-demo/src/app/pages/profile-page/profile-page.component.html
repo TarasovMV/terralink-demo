@@ -1,6 +1,7 @@
 @if (user(); as user) {
     <div class="label tui-space_bottom-4">Ваш QR-код: {{ user.qr_code }}</div>
     <qrcode
+        style="margin: 0 1rem"
         [qrdata]="'user_' + user.qr_code"
         [width]="600"
         [margin]="0"
