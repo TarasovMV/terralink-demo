@@ -55,7 +55,7 @@ export class WelcomePageComponent {
             return;
         }
 
-        this.signQrCode(this.inputCode());
+        this.signQrCode(`user_${this.inputCode()}`);
     }
 
     private goToRules(): void {
