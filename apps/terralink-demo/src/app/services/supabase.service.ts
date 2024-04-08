@@ -107,7 +107,7 @@ export class SupabaseService {
             return of(cache);
         }
 
-        return this.fromSupabase(this.supabase.from('stand').select('*').order('id', {ascending: true})).pipe(
+        return this.fromSupabase(this.supabase.from('stand').select('*').order('order', {ascending: false})).pipe(
             switchMap(res => (!res.data ? throwError(() => SupabaseErrors.GetStandsMetaError) : of(res.data))),
             tap(res => this.cache.set(key, res)),
         );
