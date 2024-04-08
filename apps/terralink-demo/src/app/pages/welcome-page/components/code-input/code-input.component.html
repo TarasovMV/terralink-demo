@@ -1,17 +1,21 @@
 <div class="code-border">
 <!--    <input #input [maskito]="mask" [formControl]="control1" type="number" />-->
     <div class="value">{{hiddenControl.value?.[0]}}</div>
+    <div *ngIf="showCursor(0)" class="blinking-cursor">|</div>
 </div>
 <div class="code-border">
 <!--    <input #input [maskito]="mask" [formControl]="control2" type="number" />-->
     <div class="value">{{hiddenControl.value?.[1]}}</div>
+    <div *ngIf="showCursor(1)" class="blinking-cursor">|</div>
 </div>
 <div class="code-border">
 <!--    <input #input [maskito]="mask" [formControl]="control3" type="number" />-->
     <div class="value">{{hiddenControl.value?.[2]}}</div>
+    <div *ngIf="showCursor(2)" class="blinking-cursor">|</div>
 </div>
 <div class="code-border">
 <!--    <input #input [maskito]="mask" [formControl]="control4" type="number" />-->
     <div class="value">{{hiddenControl.value?.[3]}}</div>
+    <div *ngIf="showCursor(3)" class="blinking-cursor">|</div>
 </div>
-<input class="hidden" [maskito]="hiddenMask" [formControl]="hiddenControl" inputmode="numeric" />
+<input (focus)="focus.set(true)" (blur)="focus.set(false)" class="hidden" [maskito]="hiddenMask" [formControl]="hiddenControl" inputmode="numeric" />

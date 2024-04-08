@@ -7,6 +7,7 @@ import {
     Input,
     OnInit,
     QueryList,
+    signal,
     ViewChildren,
     WritableSignal,
 } from '@angular/core';
@@ -37,6 +38,7 @@ export class CodeInputComponent implements OnInit {
     readonly control4 = new FormControl<number | null>(null);
 
     readonly hiddenControl = new FormControl<string>('');
+    readonly focus = signal(false);
 
     readonly mask: MaskitoOptions = {
         mask: [/\d/],
@@ -69,5 +71,9 @@ export class CodeInputComponent implements OnInit {
         this.hiddenControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(res => {
             this.result.set(res || '');
         });
+    }
+
+    showCursor(idx: number): boolean {
+        return this.focus() && this.hiddenControl.value?.length === idx;
     }
 }
