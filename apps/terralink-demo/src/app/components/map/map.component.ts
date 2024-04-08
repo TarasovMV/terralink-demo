@@ -27,7 +27,7 @@ export class MapComponent implements AfterViewInit {
 
     get mapPath(): string {
         if (this.standId) {
-            return `assets/maps/stands/map_${this.standId}.svg`;
+            return `assets/maps/stands/${this.standId}.svg`;
         }
         return `assets/maps/map.svg`;
     }
