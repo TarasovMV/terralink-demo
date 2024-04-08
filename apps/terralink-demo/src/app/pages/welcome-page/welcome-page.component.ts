@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, inject} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, signal} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {ButtonComponent} from '@terralink-demo/ui';
 import {Router} from '@angular/router';
@@ -32,6 +32,8 @@ export class WelcomePageComponent {
     private readonly dialog = inject(TuiDialogService);
     private readonly destroy$ = inject(TuiDestroyService);
 
+    readonly inputCode = signal('');
+
     openScanner(): void {
         this.dialog
             .open<string>(new PolymorpheusComponent(ScannerComponent), {
@@ -44,6 +46,14 @@ export class WelcomePageComponent {
 
     goToRegister(): void {
         this.router.navigate([Pages.Register]);
+    }
+
+    signCode(): void {
+        console.log('sign', this.inputCode());
+
+        if (this.inputCode().length < 4) {
+            return;
+        }
     }
 
     private goToRules(): void {
