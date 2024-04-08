@@ -54,6 +54,8 @@ export class WelcomePageComponent {
         if (this.inputCode().length < 4) {
             return;
         }
+
+        this.signQrCode(this.inputCode());
     }
 
     private goToRules(): void {
