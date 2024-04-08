@@ -1,16 +1,19 @@
-import {Injectable} from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {AuthSession, createClient, SupabaseClient} from '@supabase/supabase-js';
+import {LOCAL_STORAGE} from '@ng-web-apis/common';
 import {environment} from '../../environment';
 import {from, map, Observable, of, switchMap, tap, throwError} from 'rxjs';
 import {StandStats, StandMeta, SupabaseErrors, UserMeta, ProductMeta, ProductGroupMeta} from '@terralink-demo/models';
 import {clearPhoneNumber, getEmail, getQrCode} from '../utils';
 
 const SERVICE_PASS = '7>1C;_Fgy$J^6?£N-Jw)c';
+const CACHE_PREFIX = 'app_cache';
 
 @Injectable({
     providedIn: 'root',
 })
 export class SupabaseService {
+    private readonly localStorage = inject(LOCAL_STORAGE);
     private readonly supabase: SupabaseClient;
     private readonly cache = new Map<string, any>();
 
@@ -29,6 +32,12 @@ export class SupabaseService {
     }
 
     signOut() {
+        for (const key in localStorage) {
+            if (key.includes(CACHE_PREFIX)) {
+                localStorage.removeItem(key);
+            }
+        }
+
         return from(this.supabase.auth.signOut());
     }
 
@@ -60,7 +69,7 @@ export class SupabaseService {
     }
 
     getProductGroups(): Observable<ProductGroupMeta[]> {
-        const key = `product_groups`;
+        const key = `${CACHE_PREFIX}_product_groups`;
         const cache = this.cache.get(key);
 
         if (cache) {
@@ -84,7 +93,7 @@ export class SupabaseService {
     }
 
     getCurrentUser(): Observable<UserMeta> {
-        const key = `current-user`;
+        const key = `${CACHE_PREFIX}_current_user`;
         const cache = this.cache.get(key);
 
         if (cache) {
@@ -100,7 +109,7 @@ export class SupabaseService {
     }
 
     getStands(): Observable<StandMeta[]> {
-        const key = `stands`;
+        const key = `${CACHE_PREFIX}_stands`;
         const cache = this.cache.get(key);
 
         if (cache) {
@@ -114,7 +123,7 @@ export class SupabaseService {
     }
 
     getProduct(id: number): Observable<ProductMeta> {
-        const key = `product_${id}`;
+        const key = `${CACHE_PREFIX}_product_${id}`;
         const cache = this.cache.get(key);
 
         if (cache) {
@@ -128,7 +137,7 @@ export class SupabaseService {
     }
 
     getProductsByStand(stand_id: number): Observable<ProductMeta[]> {
-        const key = `products_by_stand_${stand_id}`;
+        const key = `${CACHE_PREFIX}_products_by_stand_${stand_id}`;
         const cache = this.cache.get(key);
 
         if (cache) {
