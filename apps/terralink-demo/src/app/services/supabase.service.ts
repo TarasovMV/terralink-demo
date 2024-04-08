@@ -1,6 +1,5 @@
-import {inject, Injectable} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {AuthSession, createClient, SupabaseClient} from '@supabase/supabase-js';
-import {LOCAL_STORAGE} from '@ng-web-apis/common';
 import {environment} from '../../environment';
 import {from, map, Observable, of, switchMap, tap, throwError} from 'rxjs';
 import {StandStats, StandMeta, SupabaseErrors, UserMeta, ProductMeta, ProductGroupMeta} from '@terralink-demo/models';
@@ -13,7 +12,6 @@ const CACHE_PREFIX = 'app_cache';
     providedIn: 'root',
 })
 export class SupabaseService {
-    private readonly localStorage = inject(LOCAL_STORAGE);
     private readonly supabase: SupabaseClient;
     private readonly cache = new Map<string, any>();
 
@@ -32,11 +30,7 @@ export class SupabaseService {
     }
 
     signOut() {
-        for (const key in localStorage) {
-            if (key.includes(CACHE_PREFIX)) {
-                localStorage.removeItem(key);
-            }
-        }
+        this.cache.clear();
 
         return from(this.supabase.auth.signOut());
     }
