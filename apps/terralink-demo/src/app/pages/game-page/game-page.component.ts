@@ -115,11 +115,12 @@ export class GamePageComponent implements OnInit, OnDestroy {
             .subscribe(res => res && this.doneCard(res));
     }
 
-    goToMap(): void {
+    goToMap(standId: number): void {
         this.dialog
             .open<string>(new PolymorpheusComponent(MapDialogComponent), {
                 size: 'page',
                 closeable: false,
+                data: standId,
             })
             .pipe(takeUntil(this.destroy$))
             .subscribe();

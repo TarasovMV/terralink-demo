@@ -9,7 +9,7 @@
         <game-card
             (click)="goToPresentation()"
             (openPresentation)="goToPresentation()"
-            (openMap)="goToMap()"
+            (openMap)="goToMap(card.id)"
             [data]="card"
             [done]="card.done"
         ></game-card>
