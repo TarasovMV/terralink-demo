@@ -61,7 +61,7 @@ export class PresentationPageComponent implements OnInit {
 
     back(): void {
         const standId = this.route.snapshot.queryParamMap.get('stand_id');
-        const productId = this.route.snapshot.queryParamMap.get('product_id');
+        const productId = this.id;
 
         if (this.route.snapshot.data['pageType'] === Pages.ProductPresentation) {
             this.router.navigate([Pages.Knowledge], {queryParams: {id: productId}});
