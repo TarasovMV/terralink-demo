@@ -1,12 +1,12 @@
 import express from 'express';
 import pgp from 'pg-promise';
-import { StandApi, StandMeta, StandStats, UserApi, UserMeta } from '@terralink-demo/models';
+import {StandApi, StandMeta, StandStats, UserApi, UserMeta} from '@terralink-demo/models';
 
 export function argsConfig<T>(key: string): T {
     const args = process.argv.slice(2);
     const config = args.reduce((cur, next) => {
         const arg = next.split('=');
-        return { ...cur, [arg[0]]: arg[1] };
+        return {...cur, [arg[0]]: arg[1]};
     }, {});
 
     return config?.[key] || undefined;
@@ -18,7 +18,7 @@ console.log(DB_URL);
 
 const app = express();
 const db = pgp()(DB_URL);
-const cache = new Map<string, { data: any; expires: number }>();
+const cache = new Map<string, {data: any; expires: number}>();
 
 const getFromCache = (key: string) => {
     const cached = cache.get(key);
@@ -40,20 +40,32 @@ const setCache = <T>(key: string, data: T): void => {
 
 db.connect().then();
 
-app.get('/api', (req, res) => {
-    res.send({ message: 'Welcome to terralink-demo-api!' });
+app.use(function (req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    next();
 });
 
-app.get('/api/record_visitor', async (req, res) => {
+app.get('/api', (req, res) => {
+    res.send({message: 'Welcome to terralink-demo-api!'});
+});
+
+app.get('/api/record_visitor', async (req, res, next) => {
     const key = '/api/record_visitor';
     const cached = getFromCache(key);
 
     if (cached) {
-        res.send(cached);
-        return;
+        return res.send(cached);
     }
 
-    const users = (await db.any('SELECT * FROM user_meta')) as UserMeta[];
+    let users: UserMeta[] = [];
+
+    try {
+        users = (await db.any('SELECT * FROM user_meta')) as UserMeta[];
+    } catch (e) {
+        return res.status(500).send('DB ERROR');
+    }
+
     const response: UserApi[] = users.map(u => ({
         id_visitor: u.user_id,
         music_type: u.music_genre,
@@ -64,7 +76,7 @@ app.get('/api/record_visitor', async (req, res) => {
 
     setCache(key, response);
 
-    res.send(response);
+    return res.send(response);
 });
 
 app.get('/api/record_stand', async (req, res) => {
@@ -72,11 +84,17 @@ app.get('/api/record_stand', async (req, res) => {
     const cached = getFromCache(key);
 
     if (cached) {
-        res.send(cached);
-        return;
+        return res.send(cached);
     }
 
-    const stands = (await db.any('SELECT * FROM stand')) as StandMeta[];
+    let stands: StandMeta[] = [];
+
+    try {
+        stands = (await db.any('SELECT * FROM stand')) as StandMeta[];
+    } catch (e) {
+        return res.status(500).send('DB ERROR');
+    }
+
     const response: any[] = stands.map(s => ({
         id_stand: s.id,
         title: s.title,
@@ -84,7 +102,7 @@ app.get('/api/record_stand', async (req, res) => {
 
     setCache(key, response);
 
-    res.send(response);
+    return res.send(response);
 });
 
 app.get('/api/visitor_route', async (req, res) => {
@@ -96,7 +114,14 @@ app.get('/api/visitor_route', async (req, res) => {
         return;
     }
 
-    const standStats = (await db.any('SELECT * FROM user_stand')) as StandStats[];
+    let standStats: StandStats[] = [];
+
+    try {
+        standStats = (await db.any('SELECT * FROM user_stand')) as StandStats[];
+    } catch (e) {
+        return res.status(500).send('DB ERROR');
+    }
+
     const response: StandApi[] = standStats.map(s => ({
         id_visitor: s.user_id,
         id_stand: s.stand_id,
@@ -121,7 +146,7 @@ app.get('/api/record_visitor/csv', async (req, res) => {
         res.status(404).end('Нет участников');
     }
 
-    const header = 'QR-код;Посетитель;Стиль музыки'
+    const header = 'QR-код;Посетитель;Стиль музыки';
     const rows = [];
     for (const user of userList) {
         rows.push(`${user.qr_code};${user.full_name}\\${user.organization};${user.music_type}`);
