@@ -2,6 +2,13 @@ import {ChangeDetectionStrategy, Component, effect, inject, Input, signal} from 
 import {CommonModule} from '@angular/common';
 import {GameService} from '../../../../services/game.service';
 
+const DEFAULT_GENRE = 'rock';
+const MUSIC_GENRES: {[key: string]: string} = {
+    ['рок']: 'rock',
+    ['классика']: 'classic',
+    ['джаз']: 'jazz',
+};
+
 @Component({
     selector: 'game-play',
     standalone: true,
@@ -16,19 +23,15 @@ import {GameService} from '../../../../services/game.service';
 })
 export class GamePlayComponent {
     @Input() progress = 0;
+    @Input({required: true}) genre: string | null = null;
 
     private readonly forcePlay = inject(GameService).forcePlayMusic;
     private audio = new Audio();
     readonly status = signal<'play' | 'pause'>('play');
 
-    get progressArray() {
-        return Array(this.progress)
-            .fill(null)
-            .map((_, idx) => idx < this.progress);
-    }
-
     private get audioSrc(): string {
-        return `assets/sounds/${this.progress}.mp3`;
+        const genre = MUSIC_GENRES[this.genre?.toLowerCase() ?? ''] ?? DEFAULT_GENRE;
+        return `assets/sounds/${genre}/${this.progress}.mp3`;
     }
 
     constructor() {

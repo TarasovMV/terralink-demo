@@ -23,9 +23,10 @@ import {ScannerComponent} from '../../dialogs/scanner/scanner.component';
 import {TuiAlertService, TuiDialogService} from '@taiga-ui/core';
 import {TuiDestroyService} from '@taiga-ui/cdk';
 import {SvgIconComponent} from 'angular-svg-icon';
-import {finalize, takeUntil} from 'rxjs';
+import {finalize, forkJoin, takeUntil} from 'rxjs';
 import {MapDialogComponent} from '../../dialogs/map-dialog/map-dialog.component';
 import {GameProgressButtonComponent} from '@terralink-demo/pages/game-page/components/game-progress-button/game-progress-button.component';
+import {SupabaseService} from '../../services/supabase.service';
 
 @Component({
     selector: 'game-page',
@@ -52,9 +53,11 @@ export class GamePageComponent implements OnInit, OnDestroy {
     private readonly dialog = inject(TuiDialogService);
     private readonly alertService = inject(TuiAlertService);
     private readonly destroy$ = inject(TuiDestroyService);
+    private readonly supabaseService = inject(SupabaseService);
     private readonly gameService = inject(GameService);
     private readonly showLoader = inject(LoaderService).showLoader;
 
+    readonly userGenre = signal<string | null>(null);
     readonly cardIndex = signal<number>(0);
     readonly cards = signal<StandMeta[]>([]);
     readonly progressCount = computed<number>(() => {
@@ -81,15 +84,16 @@ export class GamePageComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.showLoader.set(true);
 
-        this.gameService
-            .getCards()
+        forkJoin([this.gameService.getCards(), this.supabaseService.getCurrentUser()])
             .pipe(finalize(() => this.showLoader.set(false)))
             .subscribe({
-                next: res => {
+                next: ([res, user]) => {
                     this.cards.set(res);
                     setTimeout(() => {
                         const id = +(this.route.snapshot.queryParamMap.get('id') || 0);
                         const idx = this.cards().findIndex(c => c.id === id);
+
+                        this.userGenre.set(user.music_genre ?? null);
 
                         if (idx >= 0) {
                             this.updateCardIndex(idx);

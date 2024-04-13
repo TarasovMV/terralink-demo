@@ -1,6 +1,6 @@
 {
-    "name": "Оркестр ТерраЛинка",
-    "short_name": "Оркестр ТерраЛинка",
+    "name": "Мой оркестр",
+    "short_name": "Мой оркестр",
     "theme_color": "#000000",
     "background_color": "#000000",
     "display": "standalone",

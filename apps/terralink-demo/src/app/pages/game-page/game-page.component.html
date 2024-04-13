@@ -1,6 +1,6 @@
 <div class="header tui-space_bottom-6">
     <game-progress-button class="tui-space_right-3" style="flex: 1" [progress]="progress()" (click)="scanQr()"></game-progress-button>
-    <game-play [progress]="progressCount()"></game-play>
+    <game-play [genre]="userGenre()" [progress]="progressCount()"></game-play>
 </div>
 
 <swiper-container slides-per-view="1">
